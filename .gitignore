@@ -1,0 +1,9 @@
+**/node_modules
+.DS_Store
+**/dist
+**/src/**/index.ts
+!packages/nasi-lemak/src/index.ts
+**/coverage
+
+.vscode
+*.code-workspace

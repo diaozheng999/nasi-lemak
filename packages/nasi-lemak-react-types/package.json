@@ -1,0 +1,71 @@
+{
+  "name": "nasi-lemak-react-types",
+  "version": "1.0.0",
+  "description": "Type definition provider for Nasi Lemak",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist && python ../../build_tools/barrel.py clean",
+    "prebuild": "npm run clean && python ../../build_tools/barrel.py",
+    "build": "tsc",
+    "postbuild": "rollup -c rollup.config.js",
+    "test": "jest",
+    "lint": "tslint --project .",
+    "prepublishOnly": "npm run lint && npm run build",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diaozheng999/nasi-lemak"
+  },
+  "dependencies": {
+    "@types/react": "^16.9.5",
+    "asap": "^2.0.6",
+    "lodash": "^4.17.15",
+    "nasi": "^1.0.0",
+    "react": "^16.9.0",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@types/asap": "^2.0.0",
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.141",
+    "@types/node": "^12.7.11",
+    "@types/react-test-renderer": "^16.9.0",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "react-test-renderer": "^16.9.0",
+    "rollup": "^1.23.1",
+    "rollup-plugin-terser": "^5.1.2",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-no-focused-test": "^0.5.0",
+    "typescript": "^3.6.3"
+  },
+  "keywords": [
+    "Redux",
+    "React",
+    "React Native"
+  ],
+  "author": "My M1 App Team",
+  "license": "MIT",
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "globals": {
+      "__DEV__": true
+    }
+  }
+}

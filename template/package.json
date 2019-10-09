@@ -1,0 +1,53 @@
+{
+  "name": "@m1/base",
+  "version": "1.1.0",
+  "description": "Common JS/TypeScript API",
+  "main": "dist/cjs/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist && python ../../build_tools/barrel.py clean",
+    "prebuild": "npm run clean && python ../../build_tools/barrel.py",
+    "build": "tsc",
+    "postbuild": "rollup -c rollup.config.js",
+    "test": "jest",
+    "lint": "tslint --project .",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://m1app01d.m1.com.sg/gitlab/MyM1/react-native-core"
+  },
+  "module": "dist/esm/index.js",
+  "author": "My M1 App Team",
+  "license": "MIT",
+  "publishConfig": {
+    "registry": "http://m1app01d.m1.com.sg/nexus/repository/npm-private/"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "@types/lodash": "^4.14.135",
+    "jest": "^24.8.0",
+    "rollup": "^1.16.7",
+    "rollup-plugin-terser": "^5.1.1",
+    "terser": "^4.1.2",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.18.0",
+    "tslint-no-focused-test": "^0.5.0",
+    "typescript": "^3.5.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ],
+    "globals": {
+      "__DEV__": true
+    }
+  }
+}

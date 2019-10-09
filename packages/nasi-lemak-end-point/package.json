@@ -1,0 +1,55 @@
+{
+  "name": "nasi-lemak-end-point",
+  "version": "0.9.9",
+  "description": "End Point implementation for Nasi Lemak",
+  "main": "dist/cjs/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist && python ../../build_tools/barrel.py clean",
+    "prebuild": "npm run clean && python ../../build_tools/barrel.py",
+    "build": "tsc",
+    "postbuild": "rollup -c rollup.config.js",
+    "test": "jest",
+    "lint": "tslint --project .",
+    "prepublishOnly": "npm run lint && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diaozheng999/nasi-lemak"
+  },
+  "module": "dist/esm/index.js",
+  "author": "My M1 App Team",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react": "^16.9.5",
+    "lodash": "^4.17.15",
+    "nasi": "^1.0.0",
+    "nasi-lemak-react-types": "^1.0.0",
+    "react": "^16.9.0",
+    "rxjs": "^6.5.3",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.142",
+    "jest": "^24.9.0",
+    "rollup": "^1.23.1",
+    "rollup-plugin-terser": "^5.1.2",
+    "terser": "^4.3.8",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-no-focused-test": "^0.5.0",
+    "typescript": "^3.6.3"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ],
+    "globals": {
+      "__DEV__": true
+    }
+  }
+}
