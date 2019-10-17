@@ -5,7 +5,7 @@
  * @barrel export all
  */
 import _ from "lodash";
-import { Option } from "nasi";
+import { Dev, Option } from "nasi";
 
 interface IIntent<T> {
   effect?: Array<(oldState: T) => void | Promise<void>>;
@@ -123,20 +123,21 @@ export function printDeprecationMessage(
   component: string,
   replaceWith?: string,
 ) {
-  if (__DEV__ && compareValue === oldAction) {
-    return async () => {
-      // tslint:disable-next-line:no-console
-      console.warn(
-        `Action "${oldAction}" is deprecated in ${component}.` +
-        (
-          replaceWith ?
-            ` Use "${replaceWith}" instead.`
-          :
-            ""
-        ),
-      );
-    };
-  } else {
-    return () => Promise.resolve<void>(undefined);
-  }
+  return Dev.select(
+    () => async () => {
+      if (compareValue === oldAction) {
+        // tslint:disable-next-line:no-console
+        console.warn(
+          `Action "${oldAction}" is deprecated in ${component}.` +
+          (
+            replaceWith ?
+              ` Use "${replaceWith}" instead.`
+            :
+              ""
+          ),
+        );
+      }
+    },
+    () => () => Promise.resolve<void>(undefined),
+  );
 }

@@ -6,7 +6,7 @@
 
 import asap from "asap/raw";
 import _ from "lodash";
-import { Option } from "nasi";
+import { Dev, Option } from "nasi";
 import React from "react";
 import { Dispatcher } from "./Dispatcher";
 import * as Intent from "./Intent";
@@ -74,12 +74,14 @@ export abstract class Component<
     const intent = Option.wrapNotNull(actualIntent);
 
     if (!intent) {
-      if (__DEV__ && actualIntent !== null) {
-        // tslint:disable-next-line:no-console
-        console.warn(
-          "The reducer received an \"undefined\". Is your reducer total?",
-        );
-      }
+      Dev.devOnly(() => {
+        if (intent !== null) {
+          // tslint:disable-next-line:no-console
+          console.warn(
+            "The reducer received an \"undefined\". Is your reducer total?",
+          );
+        }
+      });
     }
 
     if (Option.isSome(intent)) {

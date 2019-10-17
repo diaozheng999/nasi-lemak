@@ -6,7 +6,7 @@
  * @barrel export useTemplate
  */
 import _ from "lodash";
-import { Option, Registry, Types } from "nasi";
+import { Dev, Option, Registry, Types } from "nasi";
 import React, { useContext, useMemo } from "react";
 import * as StyleSheet from "./StyleSheet";
 
@@ -113,7 +113,7 @@ export function createTemplateFromComposable<T>(
   key: string,
   defaultStyle: StyleSheet.IComposeable<T>,
 ): ITemplate<T> {
-  if (__DEV__) {
+  Dev.devOnly(() => {
     if (registeredTemplateKeys.has(key)) {
       throw new TypeError(
         `Template property "${key}" has already been declared.`,
@@ -121,7 +121,7 @@ export function createTemplateFromComposable<T>(
     } else {
       registeredTemplateKeys.add(key);
     }
-  }
+  });
 
   return new Template<T>(key, defaultStyle);
 }
