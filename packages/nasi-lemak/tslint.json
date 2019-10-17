@@ -12,7 +12,7 @@
   "rules": {
     "file-header": [
         true, 
-        "^\\*\\r?\\n\\s\\*\\s[^\\{]+\\r?\\n(\\s\\*\\s\\r?\\n)?\\s\\*\\s@author\\s.+\\r?\\n(\\s\\*\\s\\r?\\n)?\\s\\*\\s@file\\s[^\\{]+\\r?\\n"
+        "^\\*\\r?\\n\\s\\*\\s[^\\{]+\\r?\\n(((\\s\\*\\s\\r?\\n)?\\s\\*\\s@author\\s.+\\r?\\n(\\s\\*\\s\\r?\\n)?\\s\\*\\s@file\\s[^\\{]+\\r?\\n.*)|(\\s\\*\\sCopyright\\s.+\\r?\\n(\\s\\*\\s\\r?\\n)?\\s\\*\\s@file\\s[^\\{]+\\r?\\n\\s))$"
     ],
     "indent": [true, "spaces", 2],
     "max-line-length": [true, 80],
