@@ -2,7 +2,7 @@
 # barrel.py
 # Author: Diao Zheng
 # --------------------------------------------------------------------
-# Barreling utility for MyM1 React Native typescript implementation.
+# Barreling utility for typescript implementation.
 #
 # Place "@barrel ignore" in header comment in index.ts for a directory
 # if the directory should not have a generated index.ts
