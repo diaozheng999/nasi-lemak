@@ -23,16 +23,16 @@
   "dependencies": {
     "nasi": "^1.1.3",
     "nasi-lemak-end-point": "^0.9.9",
-    "nasi-lemak-implementation": "^1.0.0",
-    "nasi-lemak-react-types": "^1.0.0"
+    "nasi-lemak-implementation": "^1.1.0",
+    "nasi-lemak-react-types": "^1.0.1"
   },
   "devDependencies": {
-    "rollup": "^1.16.7",
+    "rollup": "^1.24.0",
     "rollup-plugin-terser": "^5.1.1",
-    "terser": "^4.1.2",
+    "terser": "^4.3.9",
     "tslint": "^5.18.0",
     "tslint-no-focused-test": "^0.5.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "jest": {
     "transform": {
