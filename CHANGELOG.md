@@ -1,4 +1,9 @@
-# 1.1.0
+# 1.1.2
+
+- `nasi-lemak-implementation`
+  - Uses `BehaviorSubject` instead of `ReplaySubject` in `useAsObservable` hook.
+
+# 1.1.0 (1.1.1)
 
 - Updated `nasi` to `1.1.3`
 - Re-exported `Dev` from `nasi`

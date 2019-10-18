@@ -10,7 +10,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useReducer } from "react";
-import { Observable, ReplaySubject, Subject } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 
 /**
  * We're hacking the `useReducer` reducer to give us a stable function that
@@ -50,7 +50,7 @@ export function useAsObservable<T>(value: T): Observable<T> {
   const [ subject$, dispatch ] = useReducer<React.Reducer<Subject<T>, T>, null>(
     updateValue,
     null,
-    () => new ReplaySubject<T>(),
+    () => new BehaviorSubject<T>(value),
   );
   useEffect(() => () => subject$.complete(), []);
   useEffect(() => {
