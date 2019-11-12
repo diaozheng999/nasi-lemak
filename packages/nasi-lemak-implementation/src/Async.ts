@@ -31,7 +31,7 @@ export function useAsync<
   (...args: TArgs) => void,
 ] {
   const interrupt = useRef(false);
-  const synchronous = Option.property(options, "synchronous") === true;
+  const synchronous = options?.synchronous === true;
   const mutex = useSingletonClass(Mutex);
 
   const [ resolution, setResolution ] = useState<Option.Type<TResolution>>(
@@ -57,7 +57,7 @@ export function useAsync<
         synchronous ?
           mutex.lock(
             () => promise(...args),
-            Option.property(options, "rejectAfter"),
+            options?.rejectAfter,
           )
         :
           (() => promise(...args))()

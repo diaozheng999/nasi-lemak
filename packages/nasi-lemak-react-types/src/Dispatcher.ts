@@ -6,9 +6,21 @@
  */
 
 import asap from "asap/raw";
-import { Option, Unique, UniqueValue } from "nasi";
+import {
+  Dev,
+  Disposable,
+  ICustomDisposable,
+  invariant,
+  Option,
+  Unique,
+  UniqueValue,
+} from "nasi";
+import { Observer } from "rxjs";
 
-export class Dispatcher<T> {
+export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
+
+  public closed = false;
+
   private idGenerator = new Unique("Dispatcher");
 
   private dispatchers: Map<UniqueValue, (action: T) => void> = new Map();
@@ -48,5 +60,38 @@ export class Dispatcher<T> {
     if (this.dispatchers.has(key)) {
       this.dispatchers.delete(key);
     }
+  }
+
+  public next = (value: T) => {
+    this.dispatch(value);
+  }
+
+  public error = (value: any) => {
+    Dev.devOnly(() => {
+      // tslint:disable-next-line: no-console
+      console.error(
+        "A subscribed RxJS observable emitted an error",
+        value,
+      );
+    });
+  }
+
+  public complete = () => {
+    return;
+  }
+
+  public get [Disposable.IsDisposed]() {
+    return this.closed;
+  }
+
+  public [Disposable.Dispose] = () => {
+
+    invariant(
+      () => !(this.dispatchers.size > 0),
+      "Cannot dispose of a dispatcher which still has listeners. Remove all " +
+      "listeners before disposing of the dispatcher.",
+    );
+
+    this.closed = true;
   }
 }

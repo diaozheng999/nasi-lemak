@@ -1,3 +1,10 @@
+# 1.2.0
+
+- Updated `nasi` to `1.2.0`
+- `nasi-lemak-react-types`
+  - Added `ReducableDispatcher`
+  - Added `ReducerComponent`
+
 # 1.1.2
 
 - `nasi-lemak-implementation`

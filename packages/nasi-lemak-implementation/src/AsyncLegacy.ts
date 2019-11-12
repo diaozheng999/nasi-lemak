@@ -21,7 +21,7 @@ export function useAsyncLegacy<TArgs extends any[], TResolution>(
     [
       ...dispatch,
       promise,
-      ...Option.value(additionalDependencies, []),
+      ...(additionalDependencies ?? []),
     ],
   );
 

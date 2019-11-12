@@ -125,8 +125,7 @@ export function CachedEndPoint<
                       of(innerAction).pipe(pluck("payload", "value")),
                     ).pipe(
                       driver.set,
-                      tap(() => Option.execute(
-                        driver.updateHeuristic,
+                      tap(() => driver.updateHeuristic?.(
                         finishTime - startTime,
                       )),
                       map(getAction("FETCH_SUCCESS")),

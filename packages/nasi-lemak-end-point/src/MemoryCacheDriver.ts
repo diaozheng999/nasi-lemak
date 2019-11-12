@@ -15,7 +15,7 @@ export class MemoryCacheDriver<T, K> implements ICacheDriver<T, K> {
   private heuristic: ICacheDriverTimeoutHeuristic;
 
   constructor(heuristic?: ICacheDriverTimeoutHeuristic) {
-    this.heuristic = Option.value(heuristic, new LinearTimeoutHeuristic());
+    this.heuristic = heuristic ?? new LinearTimeoutHeuristic();
   }
 
   public get get() {

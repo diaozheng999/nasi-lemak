@@ -8,7 +8,9 @@
 
 import React from "react";
 import { Component } from "./Component";
+import { DispatchComponent } from "./DispatchComponent";
 import * as Intent from "./Intent";
+import { ReducerComponent } from "./ReducerComponent";
 
 export type PropType<T> =
   T extends Component<infer RP, any, any, any> ?
@@ -33,6 +35,10 @@ export type StateType<T> =
 export type ActionType<T> =
   T extends Component<any, any, infer A, any> ?
     A
+  : T extends DispatchComponent<infer DA, any, any, any, any> ?
+    DA
+  : T extends ReducerComponent<any, any, infer RA, any> ?
+    RA
   :
     never
 ;
@@ -47,6 +53,10 @@ export type PublicActionType<T> =
 export type ReducerType<T> =
   T extends Component<any, infer S, infer A, any> ?
     (state: S, action: A) => Intent.Type<S>
+  : T extends DispatchComponent<infer DA, any, infer DS, any, any> ?
+    (state: DS, action: DA) => Intent.Type<DS>
+  : T extends ReducerComponent<any, infer RS, infer RA, any> ?
+    (state: RS, action: RA) => Intent.Type<RS>
   :
     never
 ;
