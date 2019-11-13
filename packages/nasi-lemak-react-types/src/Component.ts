@@ -4,10 +4,10 @@
  * @file Enforces a well-typed redux-like pattern for react components.
  */
 
-import asap from "asap/raw";
 import _ from "lodash";
 import { Dev, Option } from "nasi";
 import React from "react";
+import { CommitEffect } from "./CommitEffect";
 import { Dispatcher } from "./Dispatcher";
 import * as Intent from "./Intent";
 
@@ -87,7 +87,7 @@ export abstract class Component<
     if (Option.isSome(intent)) {
       if (Option.isSome(intent.effect)) {
         const effects = intent.effect;
-        asap(() => effects.forEach((effect) => effect(state)));
+        CommitEffect(() => effects.forEach((effect) => effect(state)));
       }
       if (Option.isSome(intent.update) && !_.isEqual({}, intent.update)) {
         // implicitly converting a Partial (boxed Pick) back to a Pick

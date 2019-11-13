@@ -5,10 +5,9 @@
  * @barrel hook
  */
 
-import asap from "asap/raw";
 import _ from "lodash";
 import { Dev } from "nasi";
-import { Intent } from "nasi-lemak-react-types";
+import { CommitEffect, Intent } from "nasi-lemak-react-types";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useIsMounted } from "./IsMounted";
 
@@ -85,7 +84,7 @@ export function useAsyncReducer<
         // this will not result in a rerender. So we have to use other means
         // to execute the side effect.
         const effects = intent.effect;
-        asap(() => {
+        CommitEffect(() => {
           Promise.all(effects.map((f) => f(asyncState)));
         });
       }
@@ -95,7 +94,7 @@ export function useAsyncReducer<
   );
 
   useEffect(() => {
-    asap(() => {
+    CommitEffect(() => {
       Promise.all(effectQueue.current.map(([s, f]) => f(s)));
       effectQueue.current = [];
     });

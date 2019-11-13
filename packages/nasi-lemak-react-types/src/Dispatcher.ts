@@ -5,7 +5,6 @@
  * dispatch actions.
  */
 
-import asap from "asap/raw";
 import {
   Dev,
   Disposable,
@@ -16,6 +15,7 @@ import {
   UniqueValue,
 } from "nasi";
 import { Observer } from "rxjs";
+import { CommitEffect } from "./CommitEffect";
 
 export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
 
@@ -47,7 +47,7 @@ export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
   }
 
   public dispatchAsync(action: T) {
-    asap(() => this.dispatch(action));
+    CommitEffect(() => this.dispatch(action));
   }
 
   public add(dispatch: (action: T) => void): UniqueValue {

@@ -8,7 +8,7 @@
 // not make TypeScript actually recognise `module.exports` in a type-safe way.
 // This is simply to produce an exported module that otherwise behaves
 // identically to Theme.ts
-declare var module: any;
+declare var module: NodeModule;
 
 const actual = jest.requireActual("../Theme");
 

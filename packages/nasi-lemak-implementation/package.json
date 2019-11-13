@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak-implementation",
-  "version": "1.2.0-pre-1",
+  "version": "1.2.0-pre-2",
   "description": "A testable framework for React and React Native",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -27,7 +27,7 @@
     "moment": "^2.24.0",
     "nasi": "^1.2.0-pre-1",
     "nasi-lemak-end-point": "^0.10.0-pre-0",
-    "nasi-lemak-react-types": "^1.1.0-pre-0",
+    "nasi-lemak-react-types": "^1.1.0-pre-3",
     "react": "^16.9.0",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0"

@@ -97,6 +97,7 @@ import {
 } from "nasi-lemak-implementation";
 import {
   Action,
+  CommitEffect,
   Component,
   Dispatch,
   DispatchComponent,
@@ -121,6 +122,7 @@ export {
   Box,
   CachedEndPoint,
   Colour,
+  CommitEffect,
   Compare,
   Component,
   ContextDispatcher,
