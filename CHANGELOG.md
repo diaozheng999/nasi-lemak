@@ -4,6 +4,9 @@
 - `nasi-lemak-react-types`
   - Added `ReducableDispatcher`
   - Added `ReducerComponent`
+  - Added RxJS utility functions
+- `nasi-lemak-implementation`
+  - Fix bug with `Theme` where themes which are registered cannot be read.
 
 # 1.1.2
 

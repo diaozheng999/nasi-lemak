@@ -6,7 +6,7 @@
  */
 import _ from "lodash";
 import { Option, Unique } from "nasi";
-import { Action } from "nasi-lemak-react-types";
+import { Action, Rx } from "nasi-lemak-react-types";
 import {
   concat,
   from,
@@ -15,7 +15,6 @@ import {
   Observable,
   of,
   OperatorFunction,
-  partition,
   zip,
 } from "rxjs";
 import { catchError, map, share } from "rxjs/operators";
@@ -40,14 +39,15 @@ export interface IEndPointConfiguration<
   TQuery,
   TResponse,
   TStagedResponse,
+  TStagedSucessResponse extends TStagedResponse = TStagedResponse
 >
 {
   name?: string;
   transformRequest: (context: TContext) =>
     OperatorFunction<TQuery, readonly [ string, RequestInit ]>;
   transformResponse: (context: TContext) =>
-    OperatorFunction<readonly [ TStagedResponse, TQuery ], TResponse>;
-  isSuccess: (raw: TStagedResponse) => boolean;
+    OperatorFunction<readonly [ TStagedSucessResponse, TQuery ], TResponse>;
+  isSuccess: (raw: TStagedResponse) => raw is TStagedSucessResponse;
   transformError: (context: TContext) =>
     OperatorFunction<any, readonly [ string, boolean ]>;
   transformResponseStaged: StagedTransform<TContext, TStagedResponse>;
@@ -72,9 +72,16 @@ export function EndPoint<
   TContext,
   TQuery,
   TResponse,
-  TStagedResponse = Response
+  TStagedResponse = Response,
+  TStagedSucessResponse extends TStagedResponse = TStagedResponse
 >(
-  config: IEndPointConfiguration<TContext, TQuery, TResponse, TStagedResponse>,
+  config: IEndPointConfiguration<
+    TContext,
+    TQuery,
+    TResponse,
+    TStagedResponse,
+    TStagedSucessResponse
+  >,
   context: TContext,
 ): OperatorFunction<
   Action.Type<"BEGIN_FETCH", TQuery>,
@@ -95,7 +102,7 @@ export function EndPoint<
 
       const getAction = action<TQuery, TResponse>(scope, fetchId, payload);
 
-      const [ success$, failure$ ] = partition(
+      const [ success$, failure$ ] = Rx.partition(
         from(fetch(query, request)).pipe(
           transformResponseStagedGuard(
             config.transformResponseStaged,

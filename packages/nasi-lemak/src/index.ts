@@ -109,6 +109,7 @@ import {
   Rescope,
   Restrict,
   RestrictDispatch,
+  Rx,
   StatelessComponent,
   Types as ReactTypes,
 } from "nasi-lemak-react-types";
@@ -187,6 +188,7 @@ export {
   Rescope,
   Restrict,
   RestrictDispatch,
+  Rx,
   Semaphore,
   StatusCode,
   StatelessComponent,

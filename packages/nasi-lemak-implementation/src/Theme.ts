@@ -97,7 +97,7 @@ export function getStyleFrom<T>(
   theme: Theme,
   key: string,
 ): Option.Type<StyleSheet.IComposeable<T>> {
-  return registry.mapValueRecursive(theme, (styles) => styles[key]);
+  return registry.mapValueRecursive(theme, (styles) => _.get(styles, key));
 }
 
 export function UNSAFE_clearRegisteredTemplateKeys() {
