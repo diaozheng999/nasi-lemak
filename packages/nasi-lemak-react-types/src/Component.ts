@@ -75,7 +75,7 @@ export abstract class Component<
 
     if (!intent) {
       Dev.devOnly(() => {
-        if (intent !== null) {
+        if (actualIntent !== null) {
           // tslint:disable-next-line:no-console
           console.warn(
             "The reducer received an \"undefined\". Is your reducer total?",
