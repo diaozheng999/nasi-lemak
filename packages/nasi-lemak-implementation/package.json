@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak-implementation",
-  "version": "1.2.0-pre-2",
+  "version": "1.2.0-pre-3",
   "description": "A testable framework for React and React Native",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -36,7 +36,6 @@
     "@types/asap": "^2.0.0",
     "@types/jest": "^24.0.18",
     "@types/lodash": "^4.14.142",
-    "@types/node": "^12.11.1",
     "@types/react-test-renderer": "^16.9.0",
     "jest": "^24.9.0",
     "react-test-renderer": "^16.10.2",
