@@ -6,7 +6,7 @@
  */
 
 import { Option } from "nasi";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useAsync } from "./Async";
 
 export function useAsyncLegacy<TArgs extends any[], TResolution>(
@@ -14,7 +14,14 @@ export function useAsyncLegacy<TArgs extends any[], TResolution>(
   dispatch: TArgs,
   additionalDependencies?: any[],
 ): Option.Type<TResolution> {
-  const [ resolution, execute ] = useAsync(promise, {}, additionalDependencies);
+
+  const memoised = useMemo(() => promise, additionalDependencies ?? []);
+
+  const [ resolution, execute ] = useAsync(
+    memoised,
+    {},
+    additionalDependencies,
+  );
 
   useEffect(
     () => execute(...dispatch),

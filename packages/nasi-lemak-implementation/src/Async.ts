@@ -7,7 +7,8 @@
 
 import _ from "lodash";
 import { Mutex, Option } from "nasi";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Stable } from "nasi-lemak-react-types";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSingletonClass } from "./SingletonClass";
 
 export interface IUseAsyncOptions {
@@ -23,12 +24,12 @@ export function useAsync<
   TArgs extends unknown[],
   TResolution,
 >(
-  promise: (...args: TArgs) => Promise<TResolution>,
+  promise: Stable.Function<TArgs, Promise<TResolution>>,
   options?: IUseAsyncOptions,
   additionalDependencies?: readonly unknown[],
 ): [
   Option.Type<TResolution>,
-  (...args: TArgs) => void,
+  Stable.Function<TArgs, void>
 ] {
   const interrupt = useRef(false);
   const synchronous = options?.synchronous === true;
@@ -50,8 +51,8 @@ export function useAsync<
       internalDependencyList
   );
 
-  const execute = useMemo(
-    () => (...args: TArgs) => {
+  const execute = useCallback(
+    (...args: TArgs) => {
 
       const res = (
         synchronous ?

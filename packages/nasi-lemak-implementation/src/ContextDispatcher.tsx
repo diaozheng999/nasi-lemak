@@ -7,17 +7,17 @@
  * @barrel component dispatch
  */
 
-import { Action } from "nasi-lemak-react-types";
+import { Action, IDispatchable } from "nasi-lemak-react-types";
 import React, { useContext, useEffect } from "react";
 
 export type ContextDispatcherDispatchAction<TScope, TContext> =
   | Action.Scoped<TScope, Action.Type<"SET_CONTEXT", TContext>>
 ;
 
-export interface IContextDispatcherProps<TScope, TContext> {
+export interface IContextDispatcherProps<TScope, TContext>
+extends IDispatchable<ContextDispatcherDispatchAction<TScope, TContext>> {
   context: React.Context<TContext>;
   scope: TScope;
-  dispatch: React.Dispatch<ContextDispatcherDispatchAction<TScope, TContext>>;
 }
 
 export function ContextDispatcher<S, T>(props: IContextDispatcherProps<S, T>) {
