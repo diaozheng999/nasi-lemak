@@ -8,6 +8,7 @@ import _ from "lodash";
 import { assert, Disposable, invariant, LinkedList, Option } from "nasi";
 import { Dispatcher } from "./Dispatcher";
 import { Type as Intent } from "./Intent";
+import * as Stable from "./Stable";
 
 type BoundReducerFunction<S, A> = (state: S, action: A) => Intent<S>;
 
@@ -20,6 +21,13 @@ export class ReducableDispatcher<
   TDispatchAction
 > extends Dispatcher<TAction>
 {
+
+  public dispatch: Stable.Dispatch<TAction> = Stable.declareAsStable(
+    (action: TAction) => {
+      this.reducer(this.currentState, action);
+      super.dispatch(action);
+    },
+  );
 
   private sideEffectsQueue = new LinkedList<() => void>();
 
@@ -70,11 +78,6 @@ export class ReducableDispatcher<
     }
 
     return {};
-  }
-
-  public dispatch = (action: TAction) => {
-    this.reducer(this.currentState, action);
-    super.dispatch(action);
   }
 
   public INTERNAL_reconcileAfterComponentUpdate(nextState: TState) {

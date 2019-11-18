@@ -7,7 +7,7 @@
 
 import _ from "lodash";
 import { Dev } from "nasi";
-import { CommitEffect, Intent } from "nasi-lemak-react-types";
+import { CommitEffect, Intent, Stable } from "nasi-lemak-react-types";
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useIsMounted } from "./IsMounted";
 
@@ -45,7 +45,7 @@ export function useAsyncReducer<
 >(
   reducer: (state: State, action: Action) => Intent.Type<State>,
   initialState: State,
-): [ State, React.Dispatch<Action>, React.Dispatch<PublicAction> ]
+): [ State, Stable.Dispatch<Action>, Stable.Dispatch<PublicAction> ]
 {
   const isMounted = useIsMounted();
 

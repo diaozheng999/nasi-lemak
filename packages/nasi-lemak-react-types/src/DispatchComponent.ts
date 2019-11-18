@@ -18,9 +18,10 @@ import React from "react";
 import * as Action from "./Action";
 import { Dispatcher } from "./Dispatcher";
 import * as Intent from "./Intent";
+import * as Stable from "./Stable";
 
 export interface IDispatchable<T> {
-  dispatch: React.Dispatch<T>;
+  dispatch: Stable.Dispatch<T>;
 }
 
 /**
@@ -67,7 +68,7 @@ export type ExcludeDispatch<T extends {}, TActions> =
 ;
 
 export interface IDispatchableWithLegacyEventHandlers<T> {
-  dispatch?: React.Dispatch<T>;
+  dispatch?: Stable.Dispatch<T>;
 }
 
 export type DispatchComponentLifecycleActions<P, S, SS> =
@@ -101,6 +102,12 @@ export abstract class DispatchComponent<
 >
 extends React.Component<TProp, TState, TSnapshot>
 {
+  protected send: Stable.Dispatch<TAction> = Stable.declareAsStable(
+    (action: TAction) => {
+      this.internalDispatcher.dispatch(action);
+    },
+  );
+
   protected readonly dispatcher: Dispatcher<TDispatchAction>;
   private readonly internalDispatcher: Dispatcher<
     | TAction
@@ -182,10 +189,6 @@ extends React.Component<TProp, TState, TSnapshot>
       | DispatchComponentLifecycleActions<TProp, TState, TSnapshot>,
   ): Intent.Type<TState>;
   // tslint:enable:variable-name
-
-  protected send = (action: TAction) => {
-    this.internalDispatcher.dispatch(action);
-  }
 
   protected fireLegacyEventListeners(_: TDispatchAction) {
     return;

@@ -6,6 +6,7 @@
  */
 
 import { Option } from "nasi";
+import { Stable } from "nasi-lemak-react-types";
 import { useEffect } from "react";
 import { useAsync } from "./Async";
 
@@ -14,7 +15,11 @@ export function useAsyncLegacy<TArgs extends any[], TResolution>(
   dispatch: TArgs,
   additionalDependencies?: any[],
 ): Option.Type<TResolution> {
-  const [ resolution, execute ] = useAsync(promise, {}, additionalDependencies);
+  const [ resolution, execute ] = useAsync(
+    Stable.declareAsStable(promise),
+    {},
+    additionalDependencies,
+  );
 
   useEffect(
     () => execute(...dispatch),
