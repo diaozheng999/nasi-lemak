@@ -5,8 +5,10 @@
   - Added `ReducableDispatcher`
   - Added `ReducerComponent`
   - Added RxJS utility functions
+  - Added `Stable` types to represent referentially-stable functions
 - `nasi-lemak-implementation`
   - Fix bug with `Theme` where themes which are registered cannot be read.
+  - Fix bug with `useAsyncLegacy` where promise gets called constantly every render.
 
 # 1.1.2
 
