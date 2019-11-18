@@ -16,10 +16,20 @@ import {
 } from "nasi";
 import { Observer } from "rxjs";
 import { CommitEffect } from "./CommitEffect";
-
+import * as Stable from "./Stable";
 export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
 
+  public get [Disposable.IsDisposed]() {
+    return this.closed;
+  }
+
   public closed = false;
+
+  public dispatch: Stable.Dispatch<T> = Stable.declareAsStable((action: T) => {
+    for (const dispatch of this.dispatchers.values()) {
+      dispatch(action);
+    }
+  });
 
   private idGenerator = new Unique("Dispatcher");
 
@@ -28,12 +38,6 @@ export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
   constructor(debugName?: string) {
     if (Option.isSome(debugName)) {
       this.idGenerator = new Unique(debugName);
-    }
-  }
-
-  public dispatch(action: T) {
-    for (const dispatch of this.dispatchers.values()) {
-      dispatch(action);
     }
   }
 
@@ -78,10 +82,6 @@ export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
 
   public complete = () => {
     return;
-  }
-
-  public get [Disposable.IsDisposed]() {
-    return this.closed;
   }
 
   public [Disposable.Dispose] = () => {

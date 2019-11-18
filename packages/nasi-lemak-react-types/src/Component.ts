@@ -10,6 +10,7 @@ import React from "react";
 import { CommitEffect } from "./CommitEffect";
 import { Dispatcher } from "./Dispatcher";
 import * as Intent from "./Intent";
+import * as Stable from "./Stable";
 
 export abstract class Component<
   TProp = {},
@@ -30,7 +31,19 @@ export abstract class Component<
    */
   public static readonly DO_NOT_SET__USE_CONTEXT: boolean = true;
 
+  public sendAction: Stable.Dispatch<TPublicAction> = Stable.declareAsStable(
+    (action) => this.send(action),
+  );
+
   protected readonly dispatcher: Dispatcher<TDispatchAction>;
+
+  protected send: Stable.Dispatch<TAction> = Stable.declareAsStable(
+    (action: TAction) => {
+      if (this.mounted) {
+        this.doReduce(this.state, action);
+      }
+    },
+  );
 
   private mounted: boolean = true;
 
@@ -46,16 +59,6 @@ export abstract class Component<
 
   public componentWillUnmount() {
     this.mounted = false;
-  }
-
-  public sendAction = (action: TPublicAction) => {
-    this.send(action);
-  }
-
-  protected send = (action: TAction) => {
-    if (this.mounted) {
-      this.doReduce(this.state, action);
-    }
   }
 
   protected reducer(

@@ -9,6 +9,7 @@
 // We know what we're doing
 /* eslint-disable react-hooks/exhaustive-deps */
 
+import { Stable } from "nasi-lemak-react-types";
 import { useEffect, useReducer } from "react";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
 
@@ -24,6 +25,15 @@ function updateValue<T>(subject$: Subject<T>, value: T): Subject<T> {
   return subject$;
 }
 
+export function useAsObservable<T extends unknown[], U>(
+  value: Stable.Function<T, U>,
+): Observable<(...args: T) => U>;
+export function useAsObservable<T extends (...args: any) => any>(
+  value: T,
+): Observable<never>;
+export function useAsObservable<T>(
+  value: T,
+): Observable<T>;
 /**
  * Uses a state value as an rxjs Observable.
  *
