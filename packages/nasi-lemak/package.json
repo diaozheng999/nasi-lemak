@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak",
-  "version": "1.2.0-pre-11",
+  "version": "1.2.0-pre.0",
   "description": "A testable framework for React Native",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -22,9 +22,9 @@
   "license": "MIT",
   "dependencies": {
     "nasi": "^1.2.0-pre-1",
-    "nasi-lemak-end-point": "0.10.0-pre-1",
-    "nasi-lemak-implementation": "1.2.0-pre-5",
-    "nasi-lemak-react-types": "1.1.0-pre-11"
+    "nasi-lemak-end-point": "0.10.0-pre.0",
+    "nasi-lemak-implementation": "1.2.0-pre.0",
+    "nasi-lemak-react-types": "1.1.0-pre.0"
   },
   "devDependencies": {
     "rollup": "^1.24.0",
