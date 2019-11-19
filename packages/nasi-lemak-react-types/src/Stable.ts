@@ -26,10 +26,28 @@ export type Dispatch<TAction> = StableFunction<[TAction], void>;
 
 type StableDispatch<TAction> = Dispatch<TAction>;
 
+export type Resolved<F> =
+  F extends (...args: infer TArgs) => infer TReturn ?
+    StableFunction<TArgs, TReturn>
+  :
+    never
+;
+
+export function declareAsStable<TArgs extends unknown[], TReturn>(
+  f: (...args: TArgs) => TReturn,
+): Function<TArgs, TReturn>;
+export function declareAsStable<T>(f: T): Resolved<T>;
 export function declareAsStable<TArgs extends unknown[], TReturn>(
   f: (...args: TArgs) => TReturn,
 ): Function<TArgs, TReturn> {
   return f as any;
+}
+
+export function get<T extends {}, K extends keyof T>(
+  obj: T,
+  key: K,
+): Resolved<T[K]> {
+  return declareAsStable(obj[key]);
 }
 
 declare module "react" {
