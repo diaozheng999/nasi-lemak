@@ -271,10 +271,10 @@ extends React.Component<TProp, TState, TSnapshot>
 
     if (intent) {
       if (intent.update) {
-        this.setState(intent.update as any);
         if (intent.effect) {
           this.currentSideEffectQueue.push(...intent.effect);
         }
+        this.setState(intent.update as any);
       } else if (intent.effect) {
         return this.flushSideEffects(intent.effect, this.state);
       }
