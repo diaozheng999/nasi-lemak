@@ -1,0 +1,23 @@
+{
+  "extends": ["tslint:latest"],
+
+  "rulesDirectory": ["tslint-no-focused-test"],
+
+  "linterOptions": {
+    "exclude": [
+      "coverage/**"
+    ]
+  },
+
+  "rules": {
+    "file-name-casing": [true, "pascal-case"],
+    "file-header": [
+        true, 
+        "^\\*\\r?\\n\\s\\*\\s[^\\{]+\\r?\\n(\\s\\*\\s\\r?\\n)?\\s\\*\\s@author\\s.+\\r?\\n(\\s\\*\\s\\r?\\n)?\\s\\*\\s@file\\s[^\\{]+\\r?\\n"
+    ],
+    "indent": [true, "spaces", 2],
+    "max-line-length": [true, 80],
+    "no-focused-test": true,
+    "one-line": [true, "check-catch", "check-finally", "check-else", "check-whitespace"]
+  }
+}
