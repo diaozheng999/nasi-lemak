@@ -6,7 +6,7 @@
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
-    "clean": "rm -rf dist && python ../../build_tools/barrel.py clean",
+    "clean": "python ../../build_tools/clean.py",
     "prebuild": "npm run clean && python ../../build_tools/barrel.py",
     "build": "tsc",
     "postbuild": "rollup -c rollup.config.js",

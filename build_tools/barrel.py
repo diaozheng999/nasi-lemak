@@ -42,7 +42,7 @@ IGNORED_DIRECTORIES = [
 
 
 def clean(directory):
-  print "Cleaning %s"%directory
+  print("Cleaning %s"%directory)
   files = os.listdir(directory)
 
   clean_directory = False
@@ -63,7 +63,7 @@ def clean(directory):
 
 
 def barrel(directory, prefix=""):
-  print "Barrelling %s"%directory
+  print("Barrelling %s"%directory)
 
   files = os.listdir(directory)
   barrel_directory = True
@@ -91,7 +91,7 @@ def barrel(directory, prefix=""):
       filename.endswith(".ts") or
       filename.endswith(".tsx")
     )) or filename in IGNORED_DIRECTORIES:
-      print "Skipping %s"%filename
+      print("Skipping %s"%filename)
       continue
 
     if filename != "index.ts":
