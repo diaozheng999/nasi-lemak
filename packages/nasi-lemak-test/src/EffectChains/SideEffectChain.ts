@@ -5,8 +5,8 @@
  */
 
 import { Option, Unique, UniqueValue } from "nasi";
-import { IDescribable } from "./IDescribable";
-import { SideEffect } from "./SideEffect";
+import { SideEffect } from "../Effects";
+import { IDescribable } from "../Interfaces";
 
 const Generator = new Unique("SideEffectChain");
 
@@ -95,7 +95,7 @@ export abstract class SideEffectChain implements IDescribable {
 
   protected abstract advance(): void;
 
-  private step() {
+  protected step() {
     switch (this.state.type) {
       case "COMPLETE":
         throw new Error(

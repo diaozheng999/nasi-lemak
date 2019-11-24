@@ -5,7 +5,7 @@
  */
 
 import { LinkedList } from "nasi";
-import { SideEffect } from "./SideEffect";
+import { SideEffect } from "../Effects/SideEffect";
 import { SideEffectChain } from "./SideEffectChain";
 
 export class SerialSideEffectChain extends SideEffectChain {
