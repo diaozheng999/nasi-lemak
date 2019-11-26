@@ -2,6 +2,7 @@
  * DispatchComponent.ts
  * @author Diao Zheng
  * @file Component that handles dispatchers
+ * @barrel export DispatchComponentLifecycleActions
  * @barrel export IDispatchable
  * @barrel export IDispatchableWithLegacyEventHandlers
  * @barrel export RestrictDispatch
