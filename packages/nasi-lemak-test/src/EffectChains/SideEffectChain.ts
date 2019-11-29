@@ -6,7 +6,7 @@
 
 import { Option, Unique, UniqueValue } from "nasi";
 import { SideEffect } from "../Effects";
-import { IDescribable } from "../Interfaces";
+import { IDescribable, Duration } from "../Interfaces";
 
 const Generator = new Unique("SideEffectChain");
 
@@ -67,13 +67,13 @@ export abstract class SideEffectChain implements IDescribable {
 
   public abstract enqueue(effect: SideEffect | SideEffectChain): void;
 
-  public execute() {
+  public execute(): Duration.Type {
     switch (this.state.type) {
       case "PENDING":
-        this.advance();
+        this.advance(Duration.INSTANT);
     }
-    this.step();
-    this.advance();
+    const duration = this.step();
+    return this.advance(duration);
   }
 
   public printCurrent() {
@@ -93,9 +93,9 @@ export abstract class SideEffectChain implements IDescribable {
     return result;
   }
 
-  protected abstract advance(): void;
+  protected abstract advance(duration: Duration.Type): Duration.Type;
 
-  protected step() {
+  protected step(): Duration.Type {
     switch (this.state.type) {
       case "COMPLETE":
         throw new Error(
@@ -103,12 +103,13 @@ export abstract class SideEffectChain implements IDescribable {
         );
 
       case "EXECUTING_CHAIN":
-        this.state.current.step();
-        break;
+        return this.state.current.step();
 
       case "EXECUTING":
-        this.state.current.execute();
-        break;
+        return this.state.current.execute();
+
+      default:
+        return Duration.INSTANT;
     }
   }
 

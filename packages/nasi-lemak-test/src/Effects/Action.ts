@@ -4,15 +4,25 @@
  * @file Describes a side effect that's a pending action
  */
 
+import _ from "lodash";
+import { Unique, assert, Option } from "nasi-lemak";
 import { SideEffect } from "./SideEffect";
 
 export class Action<TAction> extends SideEffect {
 
-  private reducerAction: any;
+  public readonly reducerAction: any;
+  private executor?: (action: TAction) => void;
 
-  constructor(action: TAction, executor: () => void, generator?: Unique) {
-    super(executor, generator);
+  constructor(
+    action: TAction,
+    generator?: Unique,
+  ) {
+    super(() => this.__internal_execute(), generator);
     this.reducerAction = action;
+  }
+
+  public __internal_setExecutor(executor: (action: TAction) => void) {
+    this.executor = executor;
   }
 
   protected describeEffect() {
@@ -20,5 +30,14 @@ export class Action<TAction> extends SideEffect {
       return `Legacy Action "${this.reducerAction}"`;
     }
     return `Action "${this.reducerAction.action}"`;
+  }
+
+  private __internal_execute() {
+    assert(
+      Option.isSome,
+      this.executor,
+      "Actions can only be executed by a Reducer.",
+    );
+    this.executor(this.reducerAction);
   }
 }

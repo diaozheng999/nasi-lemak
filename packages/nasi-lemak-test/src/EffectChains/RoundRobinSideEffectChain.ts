@@ -6,7 +6,7 @@
 
 import { LinkedList, Unique } from "nasi";
 import { SideEffect } from "../Effects";
-import { IDescribable } from "../Interfaces";
+import { Duration, IDescribable } from "../Interfaces";
 import { SideEffectChain } from "./SideEffectChain";
 
 const Generator = new Unique("RoundRobinSideEffectChain");
@@ -23,14 +23,13 @@ export class RoundRobinSideEffectChain extends SideEffectChain {
     this.chain.addToEnd(effect);
   }
 
-  protected advance() {
+  protected advance(duration: Duration.Type): Duration.Type {
     const next = this.chain.removeFromFront();
     if (!next) {
       this.state = { type: "COMPLETE" };
-      return;
+      return Duration.INSTANT;
     } else if (next.isCompleted()) {
-      this.advance();
-      return;
+      return this.advance(duration);
     } else if (next instanceof SideEffectChain) {
       this.state = { current: next, type: "EXECUTING_CHAIN" };
     } else {
@@ -38,6 +37,7 @@ export class RoundRobinSideEffectChain extends SideEffectChain {
     }
 
     this.chain.addToEnd(next);
+    return duration;
   }
 
 }

@@ -26,8 +26,8 @@
   "dependencies": {
     "asap": "^2.0.6",
     "lodash": "^4.17.15",
-    "nasi": "^1.2.0-pre-2",
-    "nasi-lemak": "1.2.0-pre.3",
+    "nasi": "^1.2.0-pre.5",
+    "nasi-lemak": "^1.2.0-pre.5",
     "react": "^16.9.0",
     "react-test-renderer": "^16.9.0",
     "rxjs": "^6.5.3",

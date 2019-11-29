@@ -7,13 +7,18 @@
 
 import { Unique } from "nasi";
 import { act } from "react-test-renderer";
+import { Duration } from "../Interfaces";
 import { SideEffect } from "./SideEffect";
 
 const Generator = new Unique("DomMutatingSideEffect");
 
 export class DomMutatingSideEffect extends SideEffect {
   constructor(action: () => void, generator?: Unique) {
-    super(act.bind(undefined, action), generator ?? Generator);
+    super(
+      act.bind(undefined, action),
+      generator ?? Generator,
+      Duration.NEXT_FRAME,
+    );
   }
 
   public toString() {

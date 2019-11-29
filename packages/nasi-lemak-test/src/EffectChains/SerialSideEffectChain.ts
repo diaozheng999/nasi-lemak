@@ -6,6 +6,7 @@
 
 import { LinkedList } from "nasi";
 import { SideEffect } from "../Effects/SideEffect";
+import { Duration } from "../Interfaces";
 import { SideEffectChain } from "./SideEffectChain";
 
 export class SerialSideEffectChain extends SideEffectChain {
@@ -15,11 +16,11 @@ export class SerialSideEffectChain extends SideEffectChain {
     this.chain.addToEnd(effect);
   }
 
-  protected advance() {
+  protected advance(duration: Duration.Type) {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         if (!this.state.current.isCompleted()) {
-          return;
+          return duration;
         }
     }
 
@@ -31,6 +32,8 @@ export class SerialSideEffectChain extends SideEffectChain {
     } else {
       this.state = { type: "COMPLETE" };
     }
+
+    return duration;
   }
 
 }
