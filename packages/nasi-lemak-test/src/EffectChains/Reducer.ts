@@ -7,8 +7,11 @@
 
 import { assert, F,  Intent, Option, Unique } from "nasi-lemak";
 import { Action, SideEffect, Update } from "../Effects";
-import { IDescribable, Duration } from "../Interfaces";
-import { ConcurrentSideEffectChain } from "./ConcurrentSideEffectChain";
+import { Duration, IDescribable } from "../Interfaces";
+import { 
+  ConcurrentSideEffectChain,
+  durationReducer,
+} from "./ConcurrentSideEffectChain";
 import { PromiseExecutor } from "./PromiseExecutor";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
 import { SideEffectChain } from "./SideEffectChain";
@@ -65,6 +68,15 @@ export class Reducer<TState, TAction> extends SideEffectChain {
   public enqueue(effect: Action<TAction>) {
     effect.__internal_setExecutor(this.reduce.bind(this, effect));
     this.updateQueue.enqueue(effect);
+  }
+
+  protected step(): Duration.Type {
+    switch (this.state.type) {
+      case "EXECUTING":
+        const mainQueue = this.mainQueue.executeOrNoop();
+        const updateQueue = this.updateQueue.execute();
+        
+    }
   }
 
   protected advance(duration: Duration.Type): Duration.Type {

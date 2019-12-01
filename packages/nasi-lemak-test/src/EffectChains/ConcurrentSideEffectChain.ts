@@ -11,7 +11,10 @@ import { SideEffectChain } from "./SideEffectChain";
 
 const Generator = new Unique("ConcurrentSideEffectChain");
 
-function durationReducer(left: Duration.Type, right: Duration.Type) {
+export function durationReducer(
+  left: Duration.Type,
+  right: Duration.Type,
+): Duration.Type {
   if (left === Duration.INSTANT) {
     return right;
   }

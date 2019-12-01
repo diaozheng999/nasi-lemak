@@ -93,6 +93,16 @@ export abstract class SideEffectChain implements IDescribable {
     return result;
   }
 
+  public executeOrNoop(): Duration.Type {
+    switch (this.state.type) {
+      case "COMPLETE":
+        return Duration.INSTANT;
+
+      default:
+        return this.execute();
+    }
+  }
+
   protected abstract advance(duration: Duration.Type): Duration.Type;
 
   protected step(): Duration.Type {
