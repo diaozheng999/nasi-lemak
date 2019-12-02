@@ -9,7 +9,9 @@ import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
 
-const Generator = new Unique("SideEffectChain");
+import { matcherErrorMessage, MatcherHintOptions, matcherHint, RECEIVED_COLOR, printWithType, printReceived } from "jest-matcher-utils";
+
+const ABBREV_DESC_CHAIN_LENGTH = 3;
 
 interface ISideEffectComplete {
   type: "COMPLETE";
@@ -54,7 +56,7 @@ export abstract class SideEffectChain implements IDescribable {
     persistent?: boolean,
   ) {
     this.spawnedBy = spawnedBy;
-    this.id = (generator ?? Generator).opaque;
+    this.id = (generator ?? new Unique("SideEffectChain")).opaque;
     this.active = true;
     this.persistent = persistent ?? false;
     if (this.persistent) {
@@ -123,17 +125,23 @@ export abstract class SideEffectChain implements IDescribable {
     console.log(this.describe(""));
   }
 
+  public getId() {
+    return `${this.id}`;
+  }
+
   public describe(linePrefix: string, abbreviate: boolean = false) {
 
-    const blank = this.blankify(linePrefix);
+    const prefix = `${this.id} >> `;
+    const blanks = this.blankify(linePrefix + prefix);
 
     // const newPrefix = `${linePrefix}${this.id}: `;
     // const blankPrefix = this.blankify(newPrefix);
 
-    let status = this.describeStatus(linePrefix, abbreviate);
+    let status = this.describeStatus(prefix, blanks);
+    status += this.describeChain(blanks, abbreviate);
 
     if (!abbreviate) {
-      status += this.describeSource(blank);
+      status += "\n" + this.describeSource(linePrefix + "  ");
     }
     return status;
   }
@@ -161,53 +169,43 @@ export abstract class SideEffectChain implements IDescribable {
     }
   }
 
-  private describeSource(linePrefix: string): string {
-    return (
-      `${linePrefix}${this.id} is spawned by:\n` +
-      this.spawnedBy.describe(linePrefix + "  ", true) +
-      "\n"
-    );
-  }
+  protected describeChain(prefix: string, abbreviate?: boolean) {
+    const maxCount = abbreviate ? ABBREV_DESC_CHAIN_LENGTH : Infinity;
 
-  private describeStatus(linePrefix: string, abbreviate: boolean): string {
-
-    if (abbreviate) {
-      switch (this.state.type) {
-        case "PENDING":
-          return `${linePrefix} ${this.id} <pending>`;
-        case "EXECUTING":
-        case "EXECUTING_CHAIN":
-          const prefix = `${linePrefix} ${this.id} >> `;
-          const blanks = this.blankify(prefix);
-
-          return prefix + this.state.current.describe(blanks, true);
-        case "COMPLETE":
-          return `${linePrefix} ${this.id} <complete>`;
+    let i = 0;
+    let result = "";
+    for (const item of this.chain) {
+      if (++i > maxCount) {
+        return result + `\n${prefix}...`;
       }
+      result += `\n${prefix}${item.describe(prefix, true)}`;
     }
 
-    const newPrefix = `${linePrefix}${this.id}: `;
-    // const spacePrefix = this.blankify(newPrefix);
+    return result || `\n${prefix}<empty chain>`;
+  }
 
-    let result = "";
+  protected describeStatus(
+    prefix: string,
+    blanks: string,
+  ): string {
 
     switch (this.state.type) {
       case "PENDING":
-        result += `${newPrefix}<pending>\n`;
-        break;
+        return `${this.id}    <pending>`;
       case "EXECUTING":
       case "EXECUTING_CHAIN":
-        result += this.state.current.describe(newPrefix, true);
-        break;
+        return prefix + this.state.current.describe(blanks, true);
       case "COMPLETE":
-        result += `${newPrefix}<completed>\n`;
-        break;
+        return `${this.id}    <complete>`;
     }
+  }
 
-    result += `${linePrefix}spawned by:\n`;
-    result += this.spawnedBy.describe(linePrefix + "  ");
-
-    return result + "\n";
+  private describeSource(linePrefix: string): string {
+    return (
+      `${this.id} is spawned by:\n` +
+      linePrefix + this.spawnedBy.describe(linePrefix, true) +
+      "\n"
+    );
   }
 
   private blankify(str: string): string {
@@ -218,4 +216,56 @@ export abstract class SideEffectChain implements IDescribable {
     return result;
   }
 
+}
+
+function ensureIsSideEffectChain(
+  received: SideEffectChain,
+  matcherName: string,
+  options?: MatcherHintOptions,
+) {
+  if (!(received instanceof SideEffectChain)) {
+    throw new Error(
+      matcherErrorMessage(
+        matcherHint(matcherName, undefined, "", options),
+        RECEIVED_COLOR("received") +
+        " value must be an instance of SideEffectChain",
+        printWithType("Received", received, printReceived),
+      ),
+    );
+  }
+}
+
+expect.extend({
+  toBeCompleted: (received: SideEffectChain) => {
+    ensureIsSideEffectChain(received, "toBeCompleted");
+    if (received.isCompleted()) {
+      return {
+        message: () => `expected ${received.getId()} not to be completed.`,
+        pass: true,
+      };
+    } else {
+      return {
+        message: () => `expected ${received.getId()} to be completed.`,
+        pass: false,
+      };
+    }
+  },
+});
+
+declare global {
+  namespace jest {
+    interface ISideEffectChainMatchers extends Matchers<void, SideEffectChain> {
+      toBeCompleted(): void;
+    }
+
+    interface Matchers<R, T> {
+      toBeCompleted(): R;
+    }
+
+    // tslint:disable-next-line: interface-name
+    interface Expect {
+      // tslint:disable-next-line: callable-types
+      (actual: SideEffectChain): ISideEffectChainMatchers;
+    }
+  }
 }

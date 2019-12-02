@@ -21,7 +21,11 @@ test("simple effect execution", () => {
   chain.enqueue(effect0);
   chain.enqueue(effect1);
 
+  expect(action0).not.toBeCalled();
+  expect(action1).not.toBeCalled();
+
+  expect(action0).not.toBeCompleted();
+
   chain.execute();
 
-  console.warn(chain.describe(">>", true));
 });

@@ -8,8 +8,6 @@ import { requires, Unique, UniqueValue } from "nasi";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
 
-const Generator = new Unique("SideEffect");
-
 export class SideEffect implements IDescribable {
 
   protected id: UniqueValue;
@@ -25,7 +23,7 @@ export class SideEffect implements IDescribable {
     duration?: Duration.Type,
   ) {
     this.action = action;
-    this.id = (generator ?? Generator).opaque;
+    this.id = (generator ?? new Unique("SideEffect")).opaque;
     this.duration = duration ?? Duration.INSTANT;
   }
 
@@ -48,7 +46,7 @@ export class SideEffect implements IDescribable {
   }
 
   public describe(_: string, __: boolean) {
-    return `${this.toString()}\n`;
+    return `${this.toString()}`;
   }
 
   protected describeEffect() {
