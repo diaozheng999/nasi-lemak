@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak-end-point",
-  "version": "0.10.0-pre.0",
+  "version": "0.10.0-pre.2",
   "description": "End Point implementation for Nasi Lemak",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -23,8 +23,8 @@
   "dependencies": {
     "@types/react": "^16.9.5",
     "lodash": "^4.17.15",
-    "nasi": "^1.2.0-pre-1",
-    "nasi-lemak-react-types": "^1.1.0-pre.0",
+    "nasi": "^1.2.0-pre.3",
+    "nasi-lemak-react-types": "^1.1.0-pre.6",
     "react": "^16.9.0",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0"
