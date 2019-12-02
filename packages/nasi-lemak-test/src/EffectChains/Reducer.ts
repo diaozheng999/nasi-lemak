@@ -5,13 +5,11 @@
  * @file A Reducer Side Effect Chain
  */
 
-import { assert, F,  Intent, Option, Unique } from "nasi-lemak";
+import { assert, Intent, Option, requires, Unique } from "nasi-lemak";
 import { Action, SideEffect, Update } from "../Effects";
-import { Duration, IDescribable } from "../Interfaces";
-import { 
-  ConcurrentSideEffectChain,
-  durationReducer,
-} from "./ConcurrentSideEffectChain";
+import { IDescribable } from "../Interfaces";
+import { Duration } from "../Utils";
+import { ConcurrentSideEffectChain } from "./ConcurrentSideEffectChain";
 import { PromiseExecutor } from "./PromiseExecutor";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
 import { SideEffectChain } from "./SideEffectChain";
@@ -44,7 +42,7 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     spawnedBy: IDescribable,
     id?: string,
   ) {
-    super(spawnedBy, Generator);
+    super(spawnedBy, Generator, true);
 
     const fixedId = id ?? this.id;
 
@@ -54,17 +52,33 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     this.mainQueue = new SerialSideEffectChain(
       this,
       new Unique(`${fixedId}_ReducerMainQueue`),
+      true,
     );
     this.sideEffectQueue = new ConcurrentSideEffectChain(
       this,
       new Unique(`${fixedId}_ReducerSideEffectQueue`),
+      true,
     );
     this.updateQueue = new SerialSideEffectChain(
       this,
       new Unique(`${fixedId}_UpdateQueue`),
+      true,
     );
   }
 
+  public setPersistence(__: boolean) {
+    throw new Error("A Reducer is always persistent.");
+  }
+
+  public deactivate() {
+    this.mainQueue.deactivate();
+    this.updateQueue.deactivate();
+    this.sideEffectQueue.deactivate();
+  }
+
+  @requires(function(this: SideEffectChain, __: Action<TAction>) {
+    return !this.isCompleted();
+  })
   public enqueue(effect: Action<TAction>) {
     effect.__internal_setExecutor(this.reduce.bind(this, effect));
     this.updateQueue.enqueue(effect);
@@ -72,15 +86,33 @@ export class Reducer<TState, TAction> extends SideEffectChain {
 
   protected step(): Duration.Type {
     switch (this.state.type) {
-      case "EXECUTING":
-        const mainQueue = this.mainQueue.executeOrNoop();
-        const updateQueue = this.updateQueue.execute();
-        
+      case "EXECUTING_CHAIN":
+        const duration: Duration.Type[] = [
+          this.mainQueue.execute(),
+          this.updateQueue.execute(),
+          this.sideEffectQueue.execute(),
+        ];
+        return duration.reduce(Duration.reducer);
+
+      default:
+        return super.step();
     }
   }
 
   protected advance(duration: Duration.Type): Duration.Type {
-    throw new Error("Method not implemented.");
+
+    if (this.active) {
+      this.state = { current: this, type: "EXECUTING_CHAIN" };
+    } else if (
+      !this.mainQueue.isCompleted() ||
+      !this.updateQueue.isCompleted() ||
+      !this.sideEffectQueue.isCompleted()
+    ) {
+      this.state = { current: this, type: "EXECUTING_CHAIN" };
+    } else {
+      this.state = { type: "COMPLETE" };
+    }
+    return duration;
   }
 
   private reduce(context: SideEffect, action: TAction) {

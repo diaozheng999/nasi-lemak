@@ -5,5 +5,5 @@
  */
 
 export interface IDescribable {
-  describe(linePrefix: string): string;
+  describe(linePrefix: string, abbreviate?: boolean): string;
 }

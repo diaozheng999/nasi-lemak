@@ -7,8 +7,6 @@
 
 // @barrel export all
 
-import { Compare } from "nasi-lemak";
-
 export const FRAME = Symbol("SideEffectExecutor/FRAME");
 export const IMMEDIATE = Symbol("SideEffectExecutor/IMMEDIATE");
 export const INSTANT = Symbol("SideEffectExecutor/INSTANT");
@@ -32,6 +30,19 @@ type Duration =
   | { readonly [IMMEDIATE]: boolean, readonly timer: TimerDuration }
 ;
 
+type Finite<T extends Duration> =
+  T extends typeof FRAME ?
+    never
+  : T extends typeof NEXT_FRAME ?
+    never
+  : T extends typeof INSTANT ?
+    never
+  : T extends typeof IMMEDIATE ?
+    never
+  :
+    T
+;
+
 export type Type = Duration;
 
 export const TARGET_FRAMES_PER_SECOND = 60;
@@ -43,6 +54,38 @@ function standardise(duration: Duration): Duration {
     return duration.timer;
   }
   return duration;
+}
+
+function mergeFinite(
+  left: Finite<Duration>,
+  right: Finite<Duration>,
+): Finite<Duration> {
+
+  switch (typeof left) {
+
+    case "number":
+      switch (typeof right) {
+        case "number":
+          return left + right;
+
+        case "object":
+          return {...right, timer: reducer(right.timer, left) };
+      }
+
+    case "object":
+      switch (typeof right) {
+        case "number":
+          return {...left, timer: reducer(left.timer, right) };
+
+        case "object":
+          return {
+            [IMMEDIATE]: left[IMMEDIATE] || right[IMMEDIATE],
+            timer: reducer(left.timer, right.timer),
+          };
+      }
+
+  }
+
 }
 
 export function setFpsTarget(target: number = TARGET_FRAMES_PER_SECOND) {
@@ -76,7 +119,14 @@ export function rationalise(duration: Duration): IRationalisedDuration {
       return { [IMMEDIATE]: true, timer: frameDuration };
   }
 }
-
+export function reducer(
+  left: TimerDuration,
+  right: TimerDuration,
+): TimerDuration;
+export function reducer(
+  left: Duration,
+  right: Duration,
+): Duration;
 export function reducer(left: Duration, right: Duration): Duration {
   switch (left) {
     case INSTANT:
@@ -94,5 +144,24 @@ export function reducer(left: Duration, right: Duration): Duration {
       }
       return right;
 
+    case IMMEDIATE:
+      if (right === IMMEDIATE) {
+        return IMMEDIATE;
+      } else if (typeof right === "object") {
+        return { ...right, [IMMEDIATE]: true };
+      }
+      return { [IMMEDIATE]: true, timer: right };
+
+    default:
+      switch (right) {
+        case IMMEDIATE:
+        case FRAME:
+        case NEXT_FRAME:
+        case INSTANT:
+          return left;
+
+        default:
+          return standardise(mergeFinite(left, right));
+      }
   }
 }

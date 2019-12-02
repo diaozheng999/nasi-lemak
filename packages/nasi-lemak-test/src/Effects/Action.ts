@@ -5,7 +5,7 @@
  */
 
 import _ from "lodash";
-import { Unique, assert, Option } from "nasi-lemak";
+import { assert, Option, Unique } from "nasi-lemak";
 import { SideEffect } from "./SideEffect";
 
 export class Action<TAction> extends SideEffect {

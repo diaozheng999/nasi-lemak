@@ -7,7 +7,7 @@
 
 import { Unique } from "nasi";
 import { act } from "react-test-renderer";
-import { Duration } from "../Interfaces";
+import { Duration } from "../Utils";
 import { SideEffect } from "./SideEffect";
 
 const Generator = new Unique("DomMutatingSideEffect");
@@ -21,10 +21,8 @@ export class DomMutatingSideEffect extends SideEffect {
     );
   }
 
-  public toString() {
-    if (this.done) {
-      return `<DomMutatingSideEffect ${this.id} (completed)>`;
-    }
-    return `<DomMutatingSideEffect ${this.id}>`;
+  protected describeEffect() {
+    return `DomMutatingSideEffect ${this.id}`;
   }
+
 }

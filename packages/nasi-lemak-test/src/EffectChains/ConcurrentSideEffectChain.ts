@@ -6,54 +6,22 @@
 
 import { Unique } from "nasi";
 import { SideEffect } from "../Effects";
-import { Duration, IDescribable } from "../Interfaces";
+import { IDescribable } from "../Interfaces";
+import { Duration } from "../Utils";
 import { SideEffectChain } from "./SideEffectChain";
 
 const Generator = new Unique("ConcurrentSideEffectChain");
-
-export function durationReducer(
-  left: Duration.Type,
-  right: Duration.Type,
-): Duration.Type {
-  if (left === Duration.INSTANT) {
-    return right;
-  }
-  if (right === Duration.INSTANT) {
-    return left;
-  }
-
-  if (typeof left === "number" && typeof right === "number") {
-    return Math.max(left, right);
-  }
-
-  if (typeof left === "number") {
-    return left;
-  }
-  if (typeof right === "number") {
-    return right;
-  }
-
-  if (left === right) {
-    return left;
-  }
-
-  if (left === Duration.NEXT_FRAME || right === Duration.NEXT_FRAME) {
-    return Duration.NEXT_FRAME;
-  }
-
-  if (left === Duration.IMMEDIATE || right === Duration.IMMEDIATE) {
-    return Duration.IMMEDIATE;
-  }
-
-  return Duration.FRAME;
-}
 
 export class ConcurrentSideEffectChain extends SideEffectChain {
 
   protected chain: Array<SideEffect | SideEffectChain> = [];
 
-  constructor(spawnedBy: IDescribable, generator?: Unique) {
-    super(spawnedBy, generator ?? Generator);
+  constructor(
+    spawnedBy: IDescribable,
+    generator?: Unique,
+    persistent?: boolean,
+  ) {
+    super(spawnedBy, generator ?? Generator, persistent);
   }
 
   public enqueue(effect: SideEffect | SideEffectChain) {
@@ -64,7 +32,7 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         return this.chain.reduce<Duration.Type>(
-          (acc, effect) => durationReducer(acc, effect.execute()),
+          (acc, effect) => Duration.reducer(acc, effect.execute()),
           Duration.INSTANT,
         );
       case "EXECUTING":

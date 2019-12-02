@@ -6,7 +6,8 @@
 
 import { Unique } from "nasi-lemak";
 import { SideEffect } from "../Effects";
-import { Duration, IDescribable } from "../Interfaces";
+import { IDescribable } from "../Interfaces";
+import { Duration } from "../Utils";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
 
 declare interface ISynchronousPromise<T> extends Promise<T> {
@@ -29,7 +30,7 @@ export class PromiseExecutor<T> extends SerialSideEffectChain {
     spawnedBy: IDescribable,
     generator?: Unique,
   ) {
-    super(spawnedBy, generator);
+    super(spawnedBy, generator, false);
 
     if (!PromiseExecutor.queued) {
       (Promise as any).enableSynchronous();

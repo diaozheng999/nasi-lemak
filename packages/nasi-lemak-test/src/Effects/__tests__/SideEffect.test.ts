@@ -4,8 +4,11 @@
  * @file Test cases for side effect
  */
 
+// tslint:disable-next-line:no-reference
+/// <reference path="../../../node_modules/@types/jest/index.d.ts" />
+
 import { Contract } from "nasi";
-import { SideEffect } from "../Effects/SideEffect";
+import { SideEffect } from "../SideEffect";
 
 beforeEach(() => {
   Contract.dismissContractMessages(

@@ -6,7 +6,7 @@
 
 import { LinkedList } from "nasi";
 import { SideEffect } from "../Effects/SideEffect";
-import { Duration } from "../Interfaces";
+import { Duration } from "../Utils";
 import { SideEffectChain } from "./SideEffectChain";
 
 export class SerialSideEffectChain extends SideEffectChain {
@@ -16,7 +16,7 @@ export class SerialSideEffectChain extends SideEffectChain {
     this.chain.addToEnd(effect);
   }
 
-  protected advance(duration: Duration.Type) {
+  protected advance(duration: Duration.Type): Duration.Type {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         if (!this.state.current.isCompleted()) {

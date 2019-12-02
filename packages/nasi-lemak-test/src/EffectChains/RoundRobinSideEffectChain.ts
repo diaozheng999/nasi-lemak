@@ -6,7 +6,8 @@
 
 import { LinkedList, Unique } from "nasi";
 import { SideEffect } from "../Effects";
-import { Duration, IDescribable } from "../Interfaces";
+import { IDescribable } from "../Interfaces";
+import { Duration } from "../Utils";
 import { SideEffectChain } from "./SideEffectChain";
 
 const Generator = new Unique("RoundRobinSideEffectChain");
@@ -15,8 +16,12 @@ export class RoundRobinSideEffectChain extends SideEffectChain {
 
   protected chain: LinkedList<SideEffect | SideEffectChain> = new LinkedList();
 
-  constructor(spawnedBy: IDescribable, generator?: Unique) {
-    super(spawnedBy, generator ?? Generator);
+  constructor(
+    spawnedBy: IDescribable,
+    generator?: Unique,
+    persistent?: boolean,
+  ) {
+    super(spawnedBy, generator ?? Generator, persistent);
   }
 
   public enqueue(effect: SideEffect | SideEffectChain) {

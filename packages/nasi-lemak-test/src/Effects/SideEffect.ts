@@ -5,7 +5,8 @@
  */
 
 import { requires, Unique, UniqueValue } from "nasi";
-import { Duration, IDescribable } from "../Interfaces";
+import { IDescribable } from "../Interfaces";
+import { Duration } from "../Utils";
 
 const Generator = new Unique("SideEffect");
 
@@ -46,8 +47,8 @@ export class SideEffect implements IDescribable {
     return this.done;
   }
 
-  public describe(linePrefix: string) {
-    return `${linePrefix}${this.toString()}\n`;
+  public describe(_: string, __: boolean) {
+    return `${this.toString()}\n`;
   }
 
   protected describeEffect() {
