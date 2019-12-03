@@ -59,5 +59,5 @@ test("describe with prefix", () => {
   const sideEffect = new SideEffect(jest.fn());
 
   const description = sideEffect.describe(prefix);
-  expect(description).toMatch(/^abcdefgh<SideEffect/);
+  expect(description).not.toMatch(/^abcdefgh<SideEffect/);
 });

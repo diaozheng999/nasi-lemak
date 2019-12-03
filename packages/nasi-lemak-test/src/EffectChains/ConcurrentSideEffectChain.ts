@@ -24,7 +24,7 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
     super(spawnedBy, generator ?? Generator, persistent);
   }
 
-  public enqueue(effect: SideEffect | SideEffectChain) {
+  protected push(effect: SideEffect | SideEffectChain) {
     this.chain.push(effect);
   }
 

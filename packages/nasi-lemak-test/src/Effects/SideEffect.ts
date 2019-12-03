@@ -45,8 +45,20 @@ export class SideEffect implements IDescribable {
     return this.done;
   }
 
-  public describe(_: string, __: boolean) {
+  public getId() {
+    return this.id;
+  }
+
+  public owner(): undefined {
+    return;
+  }
+
+  public describe(_: string, __?: boolean) {
     return `${this.toString()}`;
+  }
+
+  public getDuration(): Duration.Type {
+    return this.duration;
   }
 
   protected describeEffect() {

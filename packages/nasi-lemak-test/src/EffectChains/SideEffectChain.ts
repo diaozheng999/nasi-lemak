@@ -9,9 +9,9 @@ import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
 
-import { matcherErrorMessage, MatcherHintOptions, matcherHint, RECEIVED_COLOR, printWithType, printReceived } from "jest-matcher-utils";
-
 const ABBREV_DESC_CHAIN_LENGTH = 3;
+
+const MAX_EXECUTE_STEP_COUNT = 100000;
 
 interface ISideEffectComplete {
   type: "COMPLETE";
@@ -24,6 +24,7 @@ interface ISideEffectExecuting {
 
 interface ISideEffectExecutingChain {
   type: "EXECUTING_CHAIN";
+  stepCount: number;
   current: SideEffectChain;
 }
 
@@ -49,6 +50,10 @@ export abstract class SideEffectChain implements IDescribable {
 
   private spawnedBy: IDescribable;
   private persistent: boolean;
+
+  private stepCount = 0;
+
+  private ignoreCompleteStateForFirstLoop: boolean = false;
 
   constructor(
     spawnedBy: IDescribable,
@@ -80,7 +85,7 @@ export abstract class SideEffectChain implements IDescribable {
     return this.spawnedBy;
   }
 
-  public deactivate() {
+  public deactivate = () => {
     if (!this.persistent) {
       throw new Error("Can only deactivate a persistent side effect.");
     }
@@ -95,7 +100,18 @@ export abstract class SideEffectChain implements IDescribable {
     return this.state.type === "COMPLETE";
   }
 
-  public abstract enqueue(effect: SideEffect | SideEffectChain): void;
+  public isStarted(): boolean {
+    return this.state.type !== "PENDING";
+  }
+
+  @requires(function(this: SideEffectChain) {
+    return !this.isCompleted();
+  })
+  public enqueue(...effects: Array<SideEffect | SideEffectChain>) {
+    for (const effect of effects) {
+      this.push(effect);
+    }
+  }
 
   @requires(function(this: SideEffectChain, __: boolean) {
     return !this.isCompleted();
@@ -111,13 +127,28 @@ export abstract class SideEffectChain implements IDescribable {
     }
   }
 
-  public execute(): Duration.Type {
+  public isPersistent = () => {
+    return this.persistent;
+  }
+
+  public execute: () => Duration.Type = () => {
+
+    if (++this.stepCount > MAX_EXECUTE_STEP_COUNT) {
+      throw new Error(
+        `Executed more than ${MAX_EXECUTE_STEP_COUNT} steps in effect chain ` +
+        `${this.getId()}. Assuming some kind of infinite loop and bailing ` +
+        `out.\n${this.describe("")}`,
+      );
+    }
+
     switch (this.state.type) {
       case "PENDING":
+        this.ignoreCompleteStateForFirstLoop = true;
         this.advance(Duration.INSTANT);
     }
-    const duration = this.step();
-    return this.advance(duration);
+    const duration = this.advance(this.step());
+    this.ignoreCompleteStateForFirstLoop = false;
+    return duration;
   }
 
   public printCurrent() {
@@ -147,11 +178,15 @@ export abstract class SideEffectChain implements IDescribable {
   }
 
   protected abstract advance(duration: Duration.Type): Duration.Type;
+  protected abstract push(effect: SideEffect | SideEffectChain): void;
 
-  protected step(): Duration.Type {
+  protected step: () => Duration.Type = () => {
     switch (this.state.type) {
       case "COMPLETE":
-        if (this.persistent && this.active) {
+        if (
+          (this.persistent && this.active) ||
+          this.ignoreCompleteStateForFirstLoop
+        ) {
           return Duration.INSTANT;
         }
         throw new Error(
@@ -159,8 +194,6 @@ export abstract class SideEffectChain implements IDescribable {
         );
 
       case "EXECUTING_CHAIN":
-        return this.state.current.step();
-
       case "EXECUTING":
         return this.state.current.execute();
 
@@ -201,11 +234,21 @@ export abstract class SideEffectChain implements IDescribable {
   }
 
   private describeSource(linePrefix: string): string {
-    return (
-      `${this.id} is spawned by:\n` +
-      linePrefix + this.spawnedBy.describe(linePrefix, true) +
-      "\n"
-    );
+
+    let result = `${this.id} is spawned by:\n`;
+
+    const actualPrefix = linePrefix + "- ";
+    const prefix = linePrefix + "  ";
+
+    for (
+      let describable: Option.Type<IDescribable> = this.spawnedBy;
+      Option.isSome(describable);
+      describable = describable.owner()
+    ) {
+      result += actualPrefix + describable.describe(prefix, true) + "\n";
+    }
+
+    return result;
   }
 
   private blankify(str: string): string {
@@ -216,56 +259,4 @@ export abstract class SideEffectChain implements IDescribable {
     return result;
   }
 
-}
-
-function ensureIsSideEffectChain(
-  received: SideEffectChain,
-  matcherName: string,
-  options?: MatcherHintOptions,
-) {
-  if (!(received instanceof SideEffectChain)) {
-    throw new Error(
-      matcherErrorMessage(
-        matcherHint(matcherName, undefined, "", options),
-        RECEIVED_COLOR("received") +
-        " value must be an instance of SideEffectChain",
-        printWithType("Received", received, printReceived),
-      ),
-    );
-  }
-}
-
-expect.extend({
-  toBeCompleted: (received: SideEffectChain) => {
-    ensureIsSideEffectChain(received, "toBeCompleted");
-    if (received.isCompleted()) {
-      return {
-        message: () => `expected ${received.getId()} not to be completed.`,
-        pass: true,
-      };
-    } else {
-      return {
-        message: () => `expected ${received.getId()} to be completed.`,
-        pass: false,
-      };
-    }
-  },
-});
-
-declare global {
-  namespace jest {
-    interface ISideEffectChainMatchers extends Matchers<void, SideEffectChain> {
-      toBeCompleted(): void;
-    }
-
-    interface Matchers<R, T> {
-      toBeCompleted(): R;
-    }
-
-    // tslint:disable-next-line: interface-name
-    interface Expect {
-      // tslint:disable-next-line: callable-types
-      (actual: SideEffectChain): ISideEffectChainMatchers;
-    }
-  }
 }

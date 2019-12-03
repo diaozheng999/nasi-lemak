@@ -12,7 +12,7 @@ import { SideEffectChain } from "./SideEffectChain";
 export class SerialSideEffectChain extends SideEffectChain {
   protected chain: LinkedList<SideEffect | SideEffectChain> = new LinkedList();
 
-  public enqueue(effect: SideEffect | SideEffectChain) {
+  protected push(effect: SideEffect | SideEffectChain) {
     this.chain.addToEnd(effect);
   }
 

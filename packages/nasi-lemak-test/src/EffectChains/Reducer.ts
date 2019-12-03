@@ -79,7 +79,7 @@ export class Reducer<TState, TAction> extends SideEffectChain {
   @requires(function(this: SideEffectChain, __: Action<TAction>) {
     return !this.isCompleted();
   })
-  public enqueue(effect: Action<TAction>) {
+  protected push(effect: Action<TAction>) {
     effect.__internal_setExecutor(this.reduce.bind(this, effect));
     this.updateQueue.enqueue(effect);
   }
