@@ -102,17 +102,29 @@ export class Reducer<TState, TAction> extends SideEffectChain {
   protected advance(duration: Duration.Type): Duration.Type {
 
     if (this.active) {
-      this.state = { current: this, type: "EXECUTING_CHAIN" };
+      this.incrementStepCount();
     } else if (
       !this.mainQueue.isCompleted() ||
       !this.updateQueue.isCompleted() ||
       !this.sideEffectQueue.isCompleted()
     ) {
-      this.state = { current: this, type: "EXECUTING_CHAIN" };
+      this.incrementStepCount();
     } else {
       this.state = { type: "COMPLETE" };
     }
     return duration;
+  }
+
+  private incrementStepCount() {
+    if (this.state.type === "EXECUTING_CHAIN") {
+      ++this.state.stepCount;
+    } else {
+      this.state = {
+        current: this,
+        stepCount: 0,
+        type: "EXECUTING_CHAIN",
+      };
+    }
   }
 
   private reduce(context: SideEffect, action: TAction) {
