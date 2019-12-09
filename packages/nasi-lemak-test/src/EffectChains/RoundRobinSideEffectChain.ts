@@ -36,7 +36,7 @@ export class RoundRobinSideEffectChain extends SideEffectChain {
     } else if (next.isCompleted()) {
       return this.advance(duration);
     } else if (next instanceof SideEffectChain) {
-      this.state = { current: next, type: "EXECUTING_CHAIN" };
+      this.state = { current: next, stepCount: 0, type: "EXECUTING_CHAIN" };
     } else {
       this.state = { current: next, type: "EXECUTING" };
     }

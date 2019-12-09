@@ -20,13 +20,14 @@ export class SerialSideEffectChain extends SideEffectChain {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         if (!this.state.current.isCompleted()) {
+          ++this.state.stepCount;
           return duration;
         }
     }
 
     const next = this.chain.removeFromFront();
     if (next instanceof SideEffectChain) {
-      this.state = { current: next, type: "EXECUTING_CHAIN" };
+      this.state = { current: next, stepCount: 0, type: "EXECUTING_CHAIN" };
     } else if (next) {
       this.state = { current: next, type: "EXECUTING" };
     } else {

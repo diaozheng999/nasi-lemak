@@ -4,7 +4,7 @@
  * @author Diao Zheng
  * @file Mock implementation for Localisation to remove randomness
  */
-import { Localisation } from "..";
+import * as Localisation from "../Localisation";
 
 declare const module: any;
 

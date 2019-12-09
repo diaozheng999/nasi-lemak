@@ -15,12 +15,17 @@ export const registry = new Registry<Language, Resource>("en-US" as Language);
 
 const LanguageType = Symbol();
 
+export type LocalisationReplacement =
+  | string
+  | [string, LocalisationReplacement[]]
+;
+
 /** Supported languages. */
 export type Language = Types.Opaque<string, typeof LanguageType>;
 export type ConvertDateType = "format.date.long" | "format.date.short";
 export type LocalisationFunction = (
   key: string,
-  ...replacements: Array<string | [string, string[]]>
+  ...replacements: LocalisationReplacement[]
 ) => string;
 export type ConvertDateFunction = (
   date: Date,
@@ -128,8 +133,7 @@ function getPropertyInLanguage(
 const getLocalisedString = (
   language: Language,
   key: string,
-  // tslint:disable-next-line:trailing-comma
-  ...replacements: Array<string | [string, string[]]>
+  ...replacements: LocalisationReplacement[]
 ): string | string[] => {
   const localisedReplacements = replacements.map((value) => {
     if (_.isString(value)) {
@@ -174,8 +178,7 @@ const getLocalisedString = (
 export function getStringFromLanguage(
   language: Language,
   key: string,
-  // tslint:disable-next-line:trailing-comma
-  ...replacements: Array<string | [string, string[]]>
+  ...replacements: LocalisationReplacement[]
 ): string {
   const str = getLocalisedString(language, key, ...replacements);
   if (_.isString(str)) {
@@ -302,7 +305,7 @@ export function ofContext(context: Language): LocalisationPayload {
  */
 export function l_(
   key: string,
-  ...replacements: Array<string | [string, string[]]>
+  ...replacements: LocalisationReplacement[]
 ) {
   return React.createElement(
     Context.Consumer,

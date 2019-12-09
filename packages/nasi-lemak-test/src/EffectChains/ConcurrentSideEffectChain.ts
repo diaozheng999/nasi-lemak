@@ -28,7 +28,7 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
     this.chain.push(effect);
   }
 
-  protected step(): Duration.Type {
+  protected step: () => Duration.Type = () => {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         return this.chain.reduce<Duration.Type>(
@@ -48,11 +48,19 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
   protected advance(duration: Duration.Type): Duration.Type {
     this.chain = this.chain.filter((effect) => !effect.isCompleted());
 
+    if (this.state.type === "EXECUTING_CHAIN") {
+      ++this.state.stepCount;
+      if (this.chain.length === 0) {
+        this.state = { type: "COMPLETE" };
+      }
+      return duration;
+    }
+
     this.state =
       this.chain.length === 0 ?
         { type: "COMPLETE" }
       :
-        { current: this, type: "EXECUTING_CHAIN" }
+        { current: this, stepCount: 0, type: "EXECUTING_CHAIN" }
     ;
 
     return duration;

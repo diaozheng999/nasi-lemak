@@ -70,7 +70,7 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     throw new Error("A Reducer is always persistent.");
   }
 
-  public deactivate() {
+  public deactivate = () => {
     this.mainQueue.deactivate();
     this.updateQueue.deactivate();
     this.sideEffectQueue.deactivate();
@@ -84,7 +84,7 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     this.updateQueue.enqueue(effect);
   }
 
-  protected step(): Duration.Type {
+  protected step: () => Duration.Type = () => {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         const duration: Duration.Type[] = [
