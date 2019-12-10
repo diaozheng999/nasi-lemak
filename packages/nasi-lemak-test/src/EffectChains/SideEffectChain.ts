@@ -233,6 +233,14 @@ export abstract class SideEffectChain implements IDescribable {
     }
   }
 
+  protected blankify(str: string): string {
+    let result = "";
+    for (const _ of str) {
+      result += " ";
+    }
+    return result;
+  }
+
   private describeSource(linePrefix: string): string {
 
     let result = `${this.id} is spawned by:\n`;
@@ -248,14 +256,6 @@ export abstract class SideEffectChain implements IDescribable {
       result += actualPrefix + describable.describe(prefix, true) + "\n";
     }
 
-    return result;
-  }
-
-  private blankify(str: string): string {
-    let result = "";
-    for (const _ of str) {
-      result += " ";
-    }
     return result;
   }
 
