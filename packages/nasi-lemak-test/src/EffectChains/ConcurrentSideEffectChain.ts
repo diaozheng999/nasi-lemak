@@ -66,4 +66,19 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
     return duration;
   }
 
+  protected describeStatus(
+    prefix: string,
+    blanks: string,
+  ): string {
+    switch (this.state.type) {
+      case "EXECUTING":
+        return `${this.id}    [!! UNREACHABLE ERROR STATE !!]`;
+      case "EXECUTING_CHAIN":
+        return `${this.id}    <executing [width ${this.chain.length}]>`;
+
+      default:
+        return super.describeStatus(prefix, blanks);
+    }
+  }
+
 }

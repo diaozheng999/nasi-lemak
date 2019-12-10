@@ -69,6 +69,10 @@ export abstract class Component<
     this.reducerExecutor.deactivate();
   }
 
+  public getId = () => this.getDebugName();
+
+  public owner = () => undefined;
+
   public describe = (linePrefix: string) => {
     return `${linePrefix}Component ${this.getDebugName()}`;
   }

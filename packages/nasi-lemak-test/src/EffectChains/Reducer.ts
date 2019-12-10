@@ -14,8 +14,6 @@ import { PromiseExecutor } from "./PromiseExecutor";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
 import { SideEffectChain } from "./SideEffectChain";
 
-const Generator = new Unique("Reducer");
-
 export class Reducer<TState, TAction> extends SideEffectChain {
 
   protected reducer: (state: TState, action: TAction) => Intent.Type<TState>;
@@ -42,7 +40,7 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     spawnedBy: IDescribable,
     id?: string,
   ) {
-    super(spawnedBy, Generator, true);
+    super(spawnedBy, new Unique("Reducer"), true);
 
     const fixedId = id ?? this.id;
 
@@ -96,6 +94,28 @@ export class Reducer<TState, TAction> extends SideEffectChain {
 
       default:
         return super.step();
+    }
+  }
+
+  protected describeStatus(
+    prefix: string,
+    blanks: string,
+  ): string {
+    switch (this.state.type) {
+      case "EXECUTING":
+        return `${this.id}    [!! UNREACHABLE ERROR STATE !!]`;
+      case "EXECUTING_CHAIN":
+        return (
+          prefix +
+          `main: ${this.mainQueue.describe(blanks + "      ", true)}\n` +
+          blanks +
+          `update: ${this.updateQueue.describe(blanks + "        ", true)}\n` +
+          blanks +
+          `effect: ${this.sideEffectQueue.describe(blanks + "        ", true)}`
+        );
+
+      default:
+        return super.describeStatus(prefix, blanks);
     }
   }
 
