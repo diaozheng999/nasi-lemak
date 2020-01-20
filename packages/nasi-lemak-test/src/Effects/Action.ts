@@ -5,39 +5,16 @@
  */
 
 import _ from "lodash";
-import { assert, Option, Unique } from "nasi-lemak";
-import { SideEffect } from "./SideEffect";
+import { AttachedSideEffect } from "./AttachedSideEffect";
 
-export class Action<TAction> extends SideEffect {
+export class Action<TAction> extends AttachedSideEffect<TAction> {
 
-  public readonly reducerAction: any;
-  private executor?: (action: TAction) => void;
-
-  constructor(
-    action: TAction,
-    generator?: Unique,
-  ) {
-    super(() => this.__internal_execute(), generator);
-    this.reducerAction = action;
-  }
-
-  public __internal_setExecutor(executor: (action: TAction) => void) {
-    this.executor = executor;
-  }
+  declare public readonly attachedAction: any;
 
   protected describeEffect() {
-    if (typeof this.reducerAction === "string") {
-      return `Legacy Action "${this.reducerAction}"`;
+    if (typeof this.attachedAction === "string") {
+      return `Legacy Action "${this.attachedAction}"`;
     }
-    return `Action "${this.reducerAction.action}"`;
-  }
-
-  private __internal_execute() {
-    assert(
-      Option.isSome,
-      this.executor,
-      "Actions can only be executed by a Reducer.",
-    );
-    this.executor(this.reducerAction);
+    return `Action "${this.attachedAction.action}"`;
   }
 }
