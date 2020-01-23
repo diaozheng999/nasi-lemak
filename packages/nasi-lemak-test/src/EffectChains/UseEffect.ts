@@ -5,25 +5,16 @@
  * @file useEffect compatible hook
  */
 
-import { Unique, useSingletonClass } from "nasi-lemak";
-import { EffectCallback, useRef, useState } from "react";
+import { Unique } from "nasi-lemak";
+import React, { DependencyList, EffectCallback, useEffect } from "react";
 import { UseEffectHookCleanupEffect, UseEffectHookEffect } from "../Effects";
-import { IDescribable } from "../Interfaces";
-import { Duration, useHookSpawner, ReactActual } from "../Utils";
+import { IDescribable, IHookEffectChain } from "../Interfaces";
+import { Duration } from "../Utils";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
 import { SideEffectChain } from "./SideEffectChain";
-export class UseEffect extends SideEffectChain {
-
-  public static hook(effect: EffectCallback, deps?: DependencyList): void {
-    const [ hookId ] = ReactActual.useState(
-      () => new Unique("useEffect").string,
-    );
-    const spawner = useHookSpawner(hookId);
-    const [ effect ] = ReactActual.useState(
-      () => new UseEffect(spawner, undefined, hookId),
-    );
-
-  }
+export class UseEffect
+extends SideEffectChain
+implements IHookEffectChain<typeof useEffect> {
 
   private mainQueue: SideEffectChain;
   private cleanupQueue: SideEffectChain;
@@ -64,6 +55,16 @@ export class UseEffect extends SideEffectChain {
   public deactivate = () => {
     this.mainQueue.deactivate();
     this.cleanupQueue.deactivate();
+  }
+
+  public executeHook(
+    ReactActual: typeof React,
+    effect: EffectCallback,
+    deps: DependencyList,
+  ) {
+    ReactActual.useMemo(() => {
+      this.enqueue(new UseEffectHookEffect(effect));
+    }, deps);
   }
 
   protected step: () => Duration.Type = () => {
@@ -113,6 +114,19 @@ export class UseEffect extends SideEffectChain {
       this.state = { type: "COMPLETE" };
     }
     return duration;
+  }
+
+  protected describeStatus(
+    prefix: string,
+    blanks: string,
+  ) {
+    switch (this.state.type) {
+      case "EXECUTING_CHAIN":
+        return `${this.id}    <useEffect hook>`;
+
+      default:
+        return super.describeStatus(prefix, blanks);
+    }
   }
 
   private incrementStepCount() {

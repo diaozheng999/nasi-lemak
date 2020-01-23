@@ -8,4 +8,8 @@ import { SideEffect } from "./SideEffect";
 
 export class UseEffectHookCleanupEffect extends SideEffect {
   public readonly kind = "USE_EFFECT_HOOK_CLEANUP_EFFECT";
+
+  protected describeEffect() {
+    return `UseEffectHookCleanup ${this.getId()}`;
+  }
 }

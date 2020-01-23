@@ -4,7 +4,7 @@
  * @file A Side Effect chain that executes all streams at the same time
  */
 
-import { Unique } from "nasi";
+import { Unique } from "nasi-lemak";
 import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";

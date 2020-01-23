@@ -9,4 +9,8 @@ import { AttachedSideEffect } from "./AttachedSideEffect";
 
 export class UseEffectHookEffect extends AttachedSideEffect<EffectCallback> {
   public readonly kind = "USE_EFFECT_HOOK_EFFECT";
+
+  protected describeEffect() {
+    return `UseEffectHookEffect ${this.getId()}`;
+  }
 }

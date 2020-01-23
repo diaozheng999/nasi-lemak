@@ -20,7 +20,8 @@
     "outDir": "dist/esm",
     "declaration": true,
     "declarationDir": "dist/types",
-    "importHelpers": true
+    "importHelpers": true,
+    "jsx": "react"
   },
   "include": [
     "./src/**/*"
