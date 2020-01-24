@@ -27,5 +27,5 @@ test("renderer.act is called", () => {
 
 test("test", () => {
   const action = new DomMutatingSideEffect(jest.fn());
-  expect(action.getDuration()).toBeImmediate();
+  expect(action.getDuration()).toBeNextFrame();
 });

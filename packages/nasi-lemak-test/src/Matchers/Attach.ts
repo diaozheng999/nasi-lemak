@@ -10,7 +10,10 @@ import { Duration } from "../Utils";
 
 import {
   IDurationMatchers,
+  toBeFrame,
   toBeImmediate,
+  toBeInstant,
+  toBeNextFrame,
 } from "./DurationMatcher";
 import {
   ISideEffectChainMatchers,
@@ -24,7 +27,10 @@ import { ISideEffectMatchers } from "./SideEffectMatcher";
 export function Attach() {
   expect.extend({
     toBeCompleted,
+    toBeFrame,
     toBeImmediate,
+    toBeInstant,
+    toBeNextFrame,
     toBePersistent,
     toBeSpawnedBy,
     toBeStarted,

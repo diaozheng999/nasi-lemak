@@ -139,6 +139,8 @@ describe("persistent side effect chains", () => {
     chain.deactivate();
     expect(SideEffectChain.activePersistentChains).not.toContain(chain);
 
+    chain.execute();
+
     expect(chain).toBeCompleted();
     expect(chain).toBePersistent();
   });

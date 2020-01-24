@@ -82,7 +82,7 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     this.updateQueue.enqueue(effect);
   }
 
-  protected step: () => Duration.Type = () => {
+  protected step(): Duration.Type {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         const duration: Duration.Type[] = [

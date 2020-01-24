@@ -28,6 +28,33 @@ export interface IDurationMatchers extends jest.Matchers<void, Duration.Type> {
   toBeWithin(lo: number, hi: number, fps?: number): void;
 }
 
+function result(
+  matcher: string,
+  expected: Duration.Type,
+  received: Duration.Type,
+  pass: boolean,
+) {
+  return {
+    message: () => matcherErrorMessage(
+      matcherHint(matcher, "received", "", { isNot: pass }),
+      "",
+      `Expected: ${not(pass, EXPECTED_COLOR)}` +
+      `${printExpected(expected)}\n` +
+      `Received: ${printReceived(received)}`,
+    ),
+    pass,
+  };
+}
+
+function test(
+  matcher: string,
+  expected: Duration.Type,
+  received: Duration.Type,
+) {
+  const pass = (received === expected);
+  return result(matcher, expected, received, pass);
+}
+
 export function toBeImmediate(
   received: Duration.Type,
 ): jest.CustomMatcherResult {
@@ -36,14 +63,23 @@ export function toBeImmediate(
     (typeof received === "object" && received[Duration.IMMEDIATE] === true)
   );
 
-  return {
-    message: () => matcherErrorMessage(
-      matcherHint("toBeImmediate", "received", "", { isNot: pass }),
-      "",
-      `Expected: ${not(pass, EXPECTED_COLOR)}` +
-      `${printExpected(Duration.IMMEDIATE)}\n` +
-      `Received: ${printReceived(received)}`,
-    ),
-    pass,
-  };
+  return result("toBeImmediate", Duration.IMMEDIATE, received, pass);
+}
+
+export function toBeNextFrame(
+  received: Duration.Type,
+): jest.CustomMatcherResult {
+  return test("toBeNextFrame", Duration.NEXT_FRAME, received);
+}
+
+export function toBeInstant(
+  received: Duration.Type,
+): jest.CustomMatcherResult {
+  return test("toBeInstant", Duration.INSTANT, received);
+}
+
+export function toBeFrame(
+  received: Duration.Type,
+): jest.CustomMatcherResult {
+  return test("toBeFrame", Duration.FRAME, received);
 }

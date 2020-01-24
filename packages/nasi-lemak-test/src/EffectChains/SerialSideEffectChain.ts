@@ -30,6 +30,8 @@ export class SerialSideEffectChain extends SideEffectChain {
       this.state = { current: next, stepCount: 0, type: "EXECUTING_CHAIN" };
     } else if (next) {
       this.state = { current: next, type: "EXECUTING" };
+    } else if (this.isPersistentAndActive()) {
+      this.state = { type: "SUSPENDED" };
     } else {
       this.state = { type: "COMPLETE" };
     }

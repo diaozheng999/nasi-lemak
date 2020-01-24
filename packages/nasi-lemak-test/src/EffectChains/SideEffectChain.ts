@@ -32,11 +32,16 @@ interface ISideEffectPending {
   type: "PENDING";
 }
 
+interface ISideEffectSuspended {
+  type: "SUSPENDED";
+}
+
 type State =
   | ISideEffectComplete
   | ISideEffectExecuting
   | ISideEffectExecutingChain
   | ISideEffectPending
+  | ISideEffectSuspended
 ;
 
 export abstract class SideEffectChain implements IDescribable {
@@ -85,7 +90,7 @@ export abstract class SideEffectChain implements IDescribable {
     return this.spawnedBy;
   }
 
-  public deactivate = () => {
+  public deactivate() {
     if (!this.persistent) {
       throw new Error("Can only deactivate a persistent side effect.");
     }
@@ -131,6 +136,10 @@ export abstract class SideEffectChain implements IDescribable {
     return this.persistent;
   }
 
+  public isPersistentAndActive = () => {
+    return this.persistent && this.active;
+  }
+
   public execute: () => Duration.Type = () => {
 
     if (++this.stepCount > MAX_EXECUTE_STEP_COUNT) {
@@ -143,6 +152,7 @@ export abstract class SideEffectChain implements IDescribable {
 
     switch (this.state.type) {
       case "PENDING":
+      case "SUSPENDED":
         this.ignoreCompleteStateForFirstLoop = true;
         this.advance(Duration.INSTANT);
     }
@@ -161,7 +171,6 @@ export abstract class SideEffectChain implements IDescribable {
   }
 
   public describe(linePrefix: string, abbreviate: boolean = false) {
-
     const prefix = `${this.id} >> `;
     const blanks = this.blankify(linePrefix + prefix);
 
@@ -180,7 +189,7 @@ export abstract class SideEffectChain implements IDescribable {
   protected abstract advance(duration: Duration.Type): Duration.Type;
   protected abstract push(effect: SideEffect | SideEffectChain): void;
 
-  protected step: () => Duration.Type = () => {
+  protected step(): Duration.Type {
     switch (this.state.type) {
       case "COMPLETE":
         if (
@@ -190,7 +199,8 @@ export abstract class SideEffectChain implements IDescribable {
           return Duration.INSTANT;
         }
         throw new Error(
-          `Cannot step into completed effect chain ${this.id}.`,
+          `Cannot step into completed effect chain ${this.id}.\n` +
+          this.describe("") + "===",
         );
 
       case "EXECUTING_CHAIN":
@@ -225,6 +235,8 @@ export abstract class SideEffectChain implements IDescribable {
     switch (this.state.type) {
       case "PENDING":
         return `${this.id}    <pending>`;
+      case "SUSPENDED":
+        return `${this.id}    <suspended>`;
       case "EXECUTING":
       case "EXECUTING_CHAIN":
         return prefix + this.state.current.describe(blanks, true);

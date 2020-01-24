@@ -28,7 +28,7 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
     this.chain.push(effect);
   }
 
-  protected step: () => Duration.Type = () => {
+  protected step(): Duration.Type {
     switch (this.state.type) {
       case "EXECUTING_CHAIN":
         return this.chain.reduce<Duration.Type>(
