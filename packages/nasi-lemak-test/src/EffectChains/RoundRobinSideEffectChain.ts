@@ -31,7 +31,9 @@ export class RoundRobinSideEffectChain extends SideEffectChain {
   protected advance(duration: Duration.Type): Duration.Type {
     const next = this.chain.removeFromFront();
     if (!next) {
-      this.state = { type: "COMPLETE" };
+      this.state = {
+        type: this.isPersistentAndActive() ? "SUSPENDED" : "COMPLETE",
+      };
       return Duration.INSTANT;
     } else if (next.isCompleted()) {
       return this.advance(duration);

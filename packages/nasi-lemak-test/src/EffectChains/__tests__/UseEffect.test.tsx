@@ -7,12 +7,12 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="../../../node_modules/@types/jest/index.d.ts" />
 
-import { MockReact } from "../../MockReact";
 import renderer from "react-test-renderer";
+import { MockReact } from "../../MockReact";
 
 jest.doMock("react", MockReact);
 
-import React, { useEffect, EffectCallback } from "react";
+import React, { EffectCallback, useEffect } from "react";
 import { RootEffectChain } from "../RootEffectChain";
 
 function TestComponent(props: {

@@ -51,7 +51,9 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
     if (this.state.type === "EXECUTING_CHAIN") {
       ++this.state.stepCount;
       if (this.chain.length === 0) {
-        this.state = { type: "COMPLETE" };
+        this.state = {
+          type: this.isPersistentAndActive() ? "SUSPENDED" : "COMPLETE",
+        };
       }
       return duration;
     }

@@ -74,7 +74,7 @@ implements IHookEffectChain<typeof useEffect> {
 
       default:
         throw new Error(
-          "Only UseEffectHookEffet can be committed into UseEffect.",
+          "Only UseEffectHookEffect can be committed into UseEffect.",
         );
     }
   }
