@@ -28,7 +28,7 @@
     "chalk": "^3.0.0",
     "jest-matcher-utils": "^24.9.0",
     "lodash": "^4.17.15",
-    "nasi": "^1.2.0",
+    "nasi": "^1.2.2",
     "nasi-lemak": "^1.2.0-pre.5",
     "react": "^16.9.0",
     "react-test-renderer": "^16.9.0",
