@@ -49,17 +49,18 @@ implements IHookEffectChain<any /* this should be typeof useState<S> */> {
     initialState: S | (() => S),
   ): [ S, Stable.Dispatch<SetStateAction<S>> ] {
 
+    const [ state, reactSetState ] = ReactActual.useState(initialState);
+
     if (this.currentState === UNSET) {
-      this.currentState =
-        initialStateIsLazy(initialState) ?
-          initialState()
-        :
-          initialState
-      ;
+      this.currentState = state;
+    } else if (this.currentState !== state) {
+      this.currentState = state;
     }
 
     const setState = ReactActual.useCallback((action: SetStateAction<S>) => {
-      this.enqueue(new SetStateEffect(action));
+      const effect = new SetStateEffect(action);
+      effect.__internal_setExecutor(this.setState.bind(this, reactSetState));
+      this.enqueue(effect);
     }, []);
     return [ this.currentState, setState ];
   }
@@ -67,7 +68,6 @@ implements IHookEffectChain<any /* this should be typeof useState<S> */> {
   protected push(effect: SetStateEffect<S>) {
     switch (effect.kind) {
       case "SET_STATE_EFFECT":
-        effect.__internal_setExecutor(this.setState);
         this.chain.addToEnd(effect);
         break;
 
@@ -78,7 +78,10 @@ implements IHookEffectChain<any /* this should be typeof useState<S> */> {
     }
   }
 
-  private setState(action: SetStateAction<S>) {
+  private setState(
+    reactSetStateFunction: Stable.Dispatch<React.SetStateAction<S>>,
+    action: SetStateAction<S>,
+  ) {
     if (this.currentState === UNSET) {
       throw new Error(
         "A SetStateEffect is executed before the state is being initialised.",
@@ -87,5 +90,6 @@ implements IHookEffectChain<any /* this should be typeof useState<S> */> {
     if (setStateActionUsesPrevState(action)) {
       this.currentState = action(this.currentState);
     }
+    reactSetStateFunction(this.currentState);
   }
 }
