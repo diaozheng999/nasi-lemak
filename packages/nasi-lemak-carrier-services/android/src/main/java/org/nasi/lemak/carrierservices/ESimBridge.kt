@@ -6,10 +6,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.telephony.euicc.DownloadableSubscription
 import android.telephony.euicc.EuiccManager
 import com.facebook.react.bridge.Promise
+import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
 
@@ -28,12 +28,12 @@ val ACTION_DOWNLOAD_SUBSCRIPTION = "org.nasi.lemak.carrierservices.download_subs
             promise.resolve(manager.isEnabled)
 
     @ReactMethod fun installESimProfile(
-            __unused_address: String?,
-            __unused_confirmationCode: String?,
-            __unused_eid: String?,
-            __unused_iccid: String?,
-            __unused_matchingId: String?,
-            __unused_oid: String?,
+            @Suppress("unused") __unused_address: String?,
+            @Suppress("unused")  __unused_confirmationCode: String?,
+            @Suppress("unused")  _unused_eid: String?,
+            @Suppress("unused")  __unused_iccid: String?,
+            @Suppress("unused")  __unused_matchingId: String?,
+            @Suppress("unused")  __unused_oid: String?,
             profile: String,
             promise: Promise) {
 

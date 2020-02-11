@@ -16,6 +16,6 @@ class CarrierPackage : ReactPackage {
     )
 
     override fun createViewManagers(
-            _: ReactApplicationContext
+            @Suppress("unused") __unused_context: ReactApplicationContext
     ): MutableList<ViewManager<View, ReactShadowNode<*>>> = mutableListOf()
 }

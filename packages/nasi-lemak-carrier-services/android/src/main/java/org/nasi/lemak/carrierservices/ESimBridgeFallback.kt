@@ -2,7 +2,7 @@ package org.nasi.lemak.carrierservices
 
 import com.facebook.react.bridge.*
 
-class CarrierBridgeFallback constructor(
+class ESimBridgeFallback constructor(
         context: ReactApplicationContext
 ) : ReactContextBaseJavaModule(context) {
 
@@ -10,12 +10,12 @@ class CarrierBridgeFallback constructor(
 
     @ReactMethod fun deviceSupportsESimInstallation(promise: Promise) = promise.resolve(false)
     @ReactMethod fun installESimProfile(
-            _address: String?,
-            _confirmationCode: String?,
-            _eid: String?,
-            _iccid: String?,
-            _matchingId: String?,
-            _oid: String?,
-            _profile: String,
+            @Suppress("unused")  __unused_address: String?,
+            @Suppress("unused")  __unused_confirmationCode: String?,
+            @Suppress("unused")  __unused_eid: String?,
+            @Suppress("unused")  __unused_iccid: String?,
+            @Suppress("unused")  __unused_matchingId: String?,
+            @Suppress("unused")  __unused_oid: String?,
+            @Suppress("unused")  __unused_profile: String,
             promise: Promise) = promise.resolve(ESimProfileStatus.UNKNOWN.value)
 }

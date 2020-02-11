@@ -6,10 +6,6 @@ import java.util.concurrent.Executor
 
 /**
  * An executor on UI thread.
- *
- * This is used for:
- *   - BiometricPrompt callbacks
- *   - Creating of BiometricPrompt fragment
  */
 class MainThreadExecutor : Executor {
     val handler = Handler(Looper.getMainLooper())
