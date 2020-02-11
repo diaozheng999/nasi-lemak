@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak",
-  "version": "1.2.0-pre.9",
+  "version": "1.2.0-pre.11",
   "description": "A testable framework for React Native",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -21,14 +21,14 @@
   "author": "My M1 App Team",
   "license": "MIT",
   "dependencies": {
-    "nasi": "^1.2.0-pre.5",
+    "nasi": "^1.2.2",
     "nasi-lemak-end-point": "0.10.0-pre.2",
     "nasi-lemak-implementation": "1.2.0-pre.5",
-    "nasi-lemak-react-types": "1.1.0-pre.6"
+    "nasi-lemak-react-types": "^1.1.1"
   },
   "devDependencies": {
     "rollup": "^1.24.0",
-    "rollup-plugin-terser": "^5.1.1",
+    "rollup-plugin-terser": "^5.2.0",
     "terser": "^4.3.9",
     "tslint": "^5.18.0",
     "tslint-no-focused-test": "^0.5.0",
