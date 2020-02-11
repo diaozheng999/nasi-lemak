@@ -55,3 +55,15 @@ export type OutcomeActions =
   | HasCapability
   | Complete
 ;
+
+export type Query = Action.Scoped<
+  typeof Scope,
+  Action.Only<"ESim/QUERY_DEVICE_CAPABILITIES">
+>;
+
+export function Query(): Query {
+  return {
+    action: "ESim/QUERY_DEVICE_CAPABILITIES",
+    scope: Scope,
+  };
+}
