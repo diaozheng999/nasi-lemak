@@ -11,7 +11,7 @@ import { InstallationAction } from "./ESim";
 import { ESimBridge } from "./Native";
 
 import { Platform, PlatformOSType } from "react-native";
-import { flatMap, map, mergeMap, share } from "rxjs/operators";
+import { filter, flatMap, map, mergeMap, share } from "rxjs/operators";
 
 export interface IESimServiceContext {
   disabledPlatforms?: PlatformOSType | Iterable<PlatformOSType>;
@@ -52,12 +52,9 @@ async function installOne(
   }
 }
 
-export const install =
-  (context: IESimServiceContext) =>
-  (
-    input: Observable<InstallationAction.Install>,
-  ): Observable<InstallationAction.OutcomeActions> =>
-{
+export const install = (context: IESimServiceContext) => (
+  input: Observable<InstallationAction.Install>,
+): Observable<InstallationAction.OutcomeActions> => {
 
   const capability$ = input.pipe(
     flatMap(queryCapability.bind(undefined, context)),
@@ -75,14 +72,20 @@ export const install =
   );
 };
 
-export const query =
-  (context: IESimServiceContext) =>
-  (
-    input: Observable<InstallationAction.Query>,
-  ): Observable<InstallationAction.HasCapability> =>
-{
+export const query = (context: IESimServiceContext) => (
+  input: Observable<InstallationAction.Query>,
+): Observable<InstallationAction.HasCapability> => {
   return input.pipe(
     flatMap(queryCapability.bind(undefined, context)),
     map(InstallationAction.HasCapability),
+  );
+};
+
+export const installAndQuery = (context: IESimServiceContext) => (
+  input: Observable<InstallationAction.InstallActions>,
+): Observable<InstallationAction.OutcomeActions> => {
+  return merge(
+    input.pipe(filter(InstallationAction.isQuery), query(context)),
+    input.pipe(filter(InstallationAction.isInstall), install(context)),
   );
 };

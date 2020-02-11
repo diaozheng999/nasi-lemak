@@ -51,11 +51,6 @@ export function Complete(outcome: ESimInstallationOutcome): Complete {
   };
 }
 
-export type OutcomeActions =
-  | HasCapability
-  | Complete
-;
-
 export type Query = Action.Scoped<
   typeof Scope,
   Action.Only<"ESim/QUERY_DEVICE_CAPABILITIES">
@@ -66,4 +61,37 @@ export function Query(): Query {
     action: "ESim/QUERY_DEVICE_CAPABILITIES",
     scope: Scope,
   };
+}
+
+export type OutcomeActions =
+  | HasCapability
+  | Complete
+;
+
+export type InstallActions =
+  | Install
+  | Query
+;
+
+export type AllActions =
+  | Install
+  | Query
+  | HasCapability
+  | Complete
+;
+
+export function isInstall(action: AllActions): action is Install {
+  return action.action === "ESim/INSTALL";
+}
+
+export function isQuery(action: AllActions): action is Query {
+  return action.action === "ESim/QUERY_DEVICE_CAPABILITIES";
+}
+
+export function isHasCapability(action: AllActions): action is HasCapability {
+  return action.action === "ESim/INSTALLATION_HAS_CAPABILITY";
+}
+
+export function isComplete(action: AllActions): action is Complete {
+  return action.action === "ESim/INSTALLATION_COMPLETE";
 }
