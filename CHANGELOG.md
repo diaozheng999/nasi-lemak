@@ -11,6 +11,7 @@
 - `nasi-lemak-implementation`
   - Fix bug with `Theme` where themes which are registered cannot be read.
   - Fix bug with `useAsyncLegacy` where promise gets called constantly every render.
+  - Added `useRxOperator` hook to convert an RxJS Operator to React states.
 
 # 1.1.2
 
