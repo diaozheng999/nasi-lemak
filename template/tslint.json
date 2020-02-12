@@ -18,6 +18,7 @@
     "indent": [true, "spaces", 2],
     "max-line-length": [true, 80],
     "no-focused-test": true,
-    "one-line": [true, "check-catch", "check-finally", "check-else", "check-whitespace"]
+    "one-line": [true, "check-catch", "check-finally", "check-else", "check-whitespace"],
+    "no-submodule-imports": [true, "rxjs"]
   }
 }
