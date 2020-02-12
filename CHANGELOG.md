@@ -8,6 +8,7 @@
   - Added `Stable` types to represent referentially-stable functions
   - Fix bug which caused `DispatchComponent` to fire side effects in the next reduce cycle.
   - Added `Rx.asDispatch` to convert an RxJS observable to Dispatch.
+  - Added `isType` and `isScope` functions to Action.
 - `nasi-lemak-implementation`
   - Fix bug with `Theme` where themes which are registered cannot be read.
   - Fix bug with `useAsyncLegacy` where promise gets called constantly every render.
