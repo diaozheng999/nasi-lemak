@@ -14,11 +14,12 @@ import { Platform, PlatformOSType } from "react-native";
 import { filter, flatMap, map, mergeMap, share } from "rxjs/operators";
 
 export interface IESimServiceContext {
+  /** which platform(s) should the capabilities be disabled. */
   disabledPlatforms?: PlatformOSType | Iterable<PlatformOSType>;
 }
 
-async function queryCapability(context: IESimServiceContext) {
-  if (context.disabledPlatforms) {
+async function queryCapability(context?: IESimServiceContext) {
+  if (context?.disabledPlatforms) {
     if (typeof context.disabledPlatforms === "string") {
       if (Platform.OS === context.disabledPlatforms) {
         return false;
@@ -52,7 +53,17 @@ async function installOne(
   }
 }
 
-export const install = (context: IESimServiceContext) => (
+/**
+ * An RxJS operator that represents an installation action.
+ *
+ * This operator behaves as follows:
+ * ```
+ * input:  | Install ----------------- Install -->
+ * output: | -- HasCapability -- Complete -- HasCapability -- Complete -->
+ * ```
+ * @param context context to launch the native modules.
+ */
+export const install = (context?: IESimServiceContext) => (
   input: Observable<InstallationAction.Install>,
 ): Observable<InstallationAction.OutcomeActions> => {
 
@@ -72,7 +83,18 @@ export const install = (context: IESimServiceContext) => (
   );
 };
 
-export const query = (context: IESimServiceContext) => (
+/**
+ * An RxJS operator that represents a query for device capability.
+ *
+ * This operator behaves as follows:
+ * ```
+ * input:  | Query --------------- Query -->
+ * output: | ----- HasCapability --------- HasCapability -->
+ * ```
+ *
+ * @param context context to launch the native modules.
+ */
+export const query = (context?: IESimServiceContext) => (
   input: Observable<InstallationAction.Query>,
 ): Observable<InstallationAction.HasCapability> => {
   return input.pipe(
@@ -81,7 +103,12 @@ export const query = (context: IESimServiceContext) => (
   );
 };
 
-export const installAndQuery = (context: IESimServiceContext) => (
+/**
+ * Represents a merge of both `query` and `install` operators.
+ *
+ * @param context context to launch the native modules.
+ */
+export const allActions = (context?: IESimServiceContext) => (
   input: Observable<InstallationAction.InstallActions>,
 ): Observable<InstallationAction.OutcomeActions> => {
   return merge(

@@ -10,6 +10,14 @@ const DELIMITER = "$";
 
 export class ActivationCode {
 
+  /**
+   * Produces an Activation Code object based on an already-encoded string.
+   * @param activationCode An encoded activation code. It doesn't matter if the
+   * code is formatted for QR Code display (i.e. it's prefixed with "LPA:"), the
+   * parser will strip away the "LPA:" portion.
+   *
+   * @returns Option.None on failure, ActivationCode object on success.
+   */
   public static parse(activationCode: string): Option.Type<ActivationCode> {
     const sanitised = activationCode.replace(/^LPA:/, "");
     const sections = sanitised.split(DELIMITER, 5);

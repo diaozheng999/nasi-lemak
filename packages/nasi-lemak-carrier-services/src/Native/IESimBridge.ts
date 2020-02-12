@@ -18,15 +18,6 @@ export interface IESimBridge {
   /**
    * Any native implementation should return true IFF the current device
    * supports installation of an eSIM profile.
-   *
-   * Refer to the following for device capabilities check:
-   *
-   * Android:
-   *   https://source.android.com/devices/tech/connect/esim-overview
-   *
-   * iOS:
-   *   https://developer.apple.com/documentation/coretelephony
-   *
    */
   deviceSupportsESimInstallation(): Promise<boolean>;
 
@@ -34,12 +25,6 @@ export interface IESimBridge {
    * Attempt to install the eSIM profile in into the system, and return the
    * output status. Note that the function should always resolve to unknown
    * if the device does not support eSIM profile installation.
-   *
-   * The return state follows the specifications set out by
-   * CTCellularPlanProvisioning.addPlanWith message on iOS, which will resolve
-   * to an enum with "success", "fail" or "unknown". Note that when this
-   * resolves to "success", the server should always respond with a "installed"
-   * for this particular eSIM profile.
    *
    * This function call contains both inputs to Android and iOS, since for iOS
    * we require all the individual values, but on Android we require the encoded
