@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak",
-  "version": "1.2.0-pre.14",
+  "version": "1.2.0-pre.15",
   "description": "A testable framework for React Native",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -21,7 +21,7 @@
   "author": "My M1 App Team",
   "license": "MIT",
   "dependencies": {
-    "nasi": "^1.2.2",
+    "nasi": "^1.2.3",
     "nasi-lemak-end-point": "0.10.0-pre.2",
     "nasi-lemak-implementation": "1.2.0-pre.6",
     "nasi-lemak-react-types": "^1.1.2"
