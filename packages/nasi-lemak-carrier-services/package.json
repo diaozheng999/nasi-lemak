@@ -1,0 +1,66 @@
+{
+  "name": "nasi-lemak-carrier-services",
+  "version": "0.1.5",
+  "description": "A testable framework for React and React Native",
+  "main": "dist/cjs/index.js",
+  "types": "dist/types/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist && python ../../build_tools/barrel.py clean",
+    "prebuild": "npm run clean && python ../../build_tools/barrel.py",
+    "build": "tsc",
+    "postbuild": "rollup -c rollup.config.js",
+    "test": "jest",
+    "lint": "tslint --project .",
+    "prepublishOnly": "npm run lint && npm run build",
+    "cd": "madge --circular --ts-config tsconfig.json --warning src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diaozheng999/nasi-lemak"
+  },
+  "module": "dist/esm/index.js",
+  "author": "My M1 App Team",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0",
+    "nasi-lemak": "^1.2.0-pre.5",
+    "react": "^16.9.0",
+    "react-native": "^0.61.1",
+    "rxjs": "^6.5.3",
+    "tslib": "^1.10.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-buble": "^0.21.1",
+    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@rollup/plugin-typescript": "^3.0.0",
+    "@types/jest": "^24.0.18",
+    "@types/lodash": "^4.14.142",
+    "@types/react": "^16.9.5",
+    "@types/react-native": "^0.61.10",
+    "@types/react-test-renderer": "^16.9.1",
+    "jest": "^24.9.0",
+    "madge": "^3.7.0",
+    "react-test-renderer": "^16.10.2",
+    "rollup": "^1.24.0",
+    "rollup-plugin-terser": "^5.1.3",
+    "terser": "^4.3.8",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.0",
+    "tslint-no-focused-test": "^0.5.0",
+    "tslint-react": "^4.1.0",
+    "tslint-react-hooks": "^2.2.1",
+    "typescript": "^3.7.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist"
+    ],
+    "globals": {
+      "__DEV__": true
+    }
+  }
+}
