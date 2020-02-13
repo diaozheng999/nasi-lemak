@@ -4,7 +4,7 @@
  * @file A Side Effect chain that executes all queued effects at random
  */
 
-import { LinkedList, Unique } from "nasi";
+import { LinkedList, Option, Unique } from "nasi-lemak";
 import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
@@ -15,6 +15,7 @@ const Generator = new Unique("RoundRobinSideEffectChain");
 export class RoundRobinSideEffectChain extends SideEffectChain {
 
   protected chain: LinkedList<SideEffect | SideEffectChain> = new LinkedList();
+  protected suspendedChains: LinkedList<SideEffectChain> = new LinkedList();
 
   constructor(
     spawnedBy: IDescribable,
@@ -34,10 +35,24 @@ export class RoundRobinSideEffectChain extends SideEffectChain {
       this.state = {
         type: this.isPersistentAndActive() ? "SUSPENDED" : "COMPLETE",
       };
+
+      while (this.suspendedChains.length > 0) {
+        const chain = this.suspendedChains.removeFromFront();
+        if (Option.isSome(chain)) {
+          this.chain.addToEnd(chain);
+        }
+      }
+
       return Duration.INSTANT;
     } else if (next.isCompleted()) {
       return this.advance(duration);
     } else if (next instanceof SideEffectChain) {
+
+      if (next.isSuspendedOrComplete()) {
+        this.suspendedChains.push(next);
+        return this.advance(duration);
+      }
+
       this.state = { current: next, stepCount: 0, type: "EXECUTING_CHAIN" };
     } else {
       this.state = { current: next, type: "EXECUTING" };

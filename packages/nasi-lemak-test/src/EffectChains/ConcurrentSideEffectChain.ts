@@ -4,7 +4,8 @@
  * @file A Side Effect chain that executes all streams at the same time
  */
 
-import { Unique } from "nasi-lemak";
+import _ from "lodash";
+import { Unique, P } from "nasi-lemak";
 import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
@@ -50,7 +51,7 @@ export class ConcurrentSideEffectChain extends SideEffectChain {
 
     if (this.state.type === "EXECUTING_CHAIN") {
       ++this.state.stepCount;
-      if (this.chain.length === 0) {
+      if (_.every(this.chain, SideEffectChain.isSuspendedOrComplete)) {
         this.state = {
           type: this.isPersistentAndActive() ? "SUSPENDED" : "COMPLETE",
         };

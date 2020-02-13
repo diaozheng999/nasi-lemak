@@ -4,7 +4,7 @@
  * @file A side effect chain that proxies another side effect chain.
  */
 
-import { assert, Box, Option, Disposable } from "nasi";
+import { assert, Box, Disposable, Option } from "nasi";
 import { SideEffect } from "../Effects";
 import { Duration } from "../Utils";
 import { SideEffectChain } from "./SideEffectChain";
@@ -32,7 +32,10 @@ extends SideEffectChain {
   }
 
   protected advance(duration: Duration.Type): Duration.Type {
-    if (Option.isSome(this.chain.value)) {
+    if (
+      Option.isSome(this.chain.value) &&
+      !this.chain.value.isSuspendedOrComplete()
+    ) {
       this.state = {
         current: this.chain.value,
         stepCount: 0,

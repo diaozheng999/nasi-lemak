@@ -6,6 +6,7 @@
 
 import { Disposable, Unique } from "nasi-lemak";
 import { IDescribable } from "../Interfaces";
+import { Duration } from "../Utils";
 import { ConcurrentSideEffectChain } from "./ConcurrentSideEffectChain";
 import { RoundRobinSideEffectChain } from "./RoundRobinSideEffectChain";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
@@ -26,6 +27,7 @@ export type RootEffectChainExecutionType =
 export const RootEffectChain: {
   current: SideEffectChain;
   create(type: RootEffectChainExecutionType): void;
+  executeAllPendingEffects(chain?: SideEffectChain): void;
 } = {
   current: new ConcurrentSideEffectChain(
     Root,
@@ -60,6 +62,14 @@ export const RootEffectChain: {
           true,
         );
         break;
+    }
+  },
+
+  executeAllPendingEffects(chain?: SideEffectChain) {
+    const sideEffectChain = chain ?? this.current;
+
+    while (!sideEffectChain.isSuspendedOrComplete()) {
+      Duration.advanceJestTimers(sideEffectChain.execute());
     }
   },
 };

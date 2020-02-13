@@ -165,3 +165,11 @@ export function reducer(left: Duration, right: Duration): Duration {
       }
   }
 }
+
+export function advanceJestTimers(duration: Duration) {
+  const rationalised = rationalise(duration);
+  if (rationalised[IMMEDIATE]) {
+    jest.runAllImmediates();
+  }
+  jest.advanceTimersByTime(rationalised.timer);
+}

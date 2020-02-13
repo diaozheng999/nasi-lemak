@@ -49,6 +49,14 @@ implements IDescribable, ICustomDisposable {
 
   public static activePersistentChains: Set<SideEffectChain> = new Set();
 
+  public static isSuspendedOrComplete(effect: SideEffectChain | SideEffect) {
+    if (effect instanceof SideEffectChain) {
+      return effect.isSuspendedOrComplete();
+    } else {
+      return effect.isCompleted();
+    }
+  }
+
   protected id: UniqueValue;
 
   protected abstract chain: Iterable<SideEffect | SideEffectChain>;
@@ -136,6 +144,10 @@ implements IDescribable, ICustomDisposable {
 
   public isPersistent = () => {
     return this.persistent;
+  }
+
+  public isSuspendedOrComplete = () => {
+    return this.state.type === "SUSPENDED" || this.state.type === "COMPLETE";
   }
 
   public isPersistentAndActive = () => {

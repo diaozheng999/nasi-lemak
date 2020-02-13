@@ -132,13 +132,13 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     if (this.active) {
       this.incrementStepCount();
     } else if (
-      !this.mainQueue.isCompleted() ||
-      !this.updateQueue.isCompleted() ||
-      !this.sideEffectQueue.isCompleted()
+      !this.mainQueue.isSuspendedOrComplete() ||
+      !this.updateQueue.isSuspendedOrComplete() ||
+      !this.sideEffectQueue.isSuspendedOrComplete()
     ) {
       this.incrementStepCount();
     } else {
-      this.state = { type: "COMPLETE" };
+      this.state = { type: "SUSPENDED" };
     }
     return duration;
   }
