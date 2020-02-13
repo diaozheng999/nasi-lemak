@@ -5,6 +5,8 @@
  * @file Setting up Jest for the entire testing library
  */
 
+// @barrel ignore
+
 import { Attach } from "./Matchers";
 import { MockNasiLemakImpl, MockReact } from "./Modules";
 

@@ -5,7 +5,7 @@
  */
 
 import _ from "lodash";
-import { Unique, P } from "nasi-lemak";
+import { Unique } from "nasi-lemak";
 import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
