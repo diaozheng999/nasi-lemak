@@ -11,10 +11,9 @@ import {
   ICustomDisposable,
   invariant,
   Option,
-  Stable,
   Unique,
   UniqueValue,
-} from "nasi-lemak";
+} from "nasi";
 import { Observer } from "rxjs";
 import {
   RootEffectChain,
@@ -33,12 +32,6 @@ implements ICustomDisposable, Observer<T>, IDescribable {
 
   public closed = false;
 
-  public dispatch: Stable.Dispatch<T> = Stable.declareAsStable((action: T) => {
-    for (const [ id, dispatch ] of this.dispatchers.entries()) {
-      this.chain.enqueue(new Dispatch(action, id, dispatch));
-    }
-  });
-
   public chain: SideEffectChain;
 
   private idGenerator = new Unique("Dispatcher");
@@ -54,6 +47,12 @@ implements ICustomDisposable, Observer<T>, IDescribable {
     this.debugInfo = (debugName as any) ?? this.idGenerator.string;
     this.chain = new SerialSideEffectChain(this, this.idGenerator, true);
     RootEffectChain.current.enqueue(this.chain);
+  }
+
+  public dispatch: React.Dispatch<T> = (action: T) => {
+    for (const [ id, dispatch ] of this.dispatchers.entries()) {
+      this.chain.enqueue(new Dispatch(action, id, dispatch));
+    }
   }
 
   public getId() {

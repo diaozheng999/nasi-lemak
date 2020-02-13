@@ -12,5 +12,6 @@ import { MockNasiLemakImpl, MockReact } from "./Modules";
 
 jest.mock("react", MockReact);
 jest.mock("nasi-lemak-implementation", MockNasiLemakImpl);
+jest.useFakeTimers();
 
 Attach();

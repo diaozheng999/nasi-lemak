@@ -5,11 +5,11 @@
  */
 
 import { Unique } from "nasi";
-import { UseEffect, UseReducer, UseState } from "../EffectChains";
-import { MockCreateElement, SpawnHook } from "../TestUtils";
-import { ReactActual } from "../Utils";
 
 export function MockReact(): unknown {
+  const { UseEffect, UseReducer, UseState } = require("../EffectChains");
+  const { SpawnHook } = require("../TestUtils");
+  const { MockCreateElement, ReactActual } = require("../Utils");
   return {
     ...ReactActual,
     __nltinternal_isMocked: true,

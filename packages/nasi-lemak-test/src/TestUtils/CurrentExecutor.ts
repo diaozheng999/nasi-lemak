@@ -4,18 +4,20 @@
  * @file Current running executor.
  */
 
-import { Box, Lazy } from "nasi-lemak";
+// @barrel ignore
+
 import { RootEffectChain, SideEffectChain } from "../EffectChains";
 
-export class CurrentExecutor extends Box<SideEffectChain> {
+let currentExecutor: SideEffectChain | undefined;
 
-  public static readonly shared = Lazy(() => new CurrentExecutor());
+export function __internal_getCurrentExecutor(): SideEffectChain {
+  return currentExecutor ?? RootEffectChain.current;
+}
 
-  private constructor() {
-    super(RootEffectChain.current);
-  }
-
-  public valueOf() {
-    return this.value ?? RootEffectChain.current;
-  }
+export function __internal_setCurrentExecutor(
+  executor?: SideEffectChain,
+): SideEffectChain {
+  const previousExecutor = currentExecutor;
+  currentExecutor = executor;
+  return previousExecutor ?? RootEffectChain.current;
 }

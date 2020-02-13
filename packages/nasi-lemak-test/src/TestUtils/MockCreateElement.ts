@@ -8,7 +8,10 @@ import { Disposable, Types, Unique } from "nasi-lemak";
 import { Attributes, FunctionComponent, ReactElement, ReactNode } from "react";
 import { ConcurrentSideEffectChain } from "../EffectChains";
 import { ReactActual } from "../Utils";
-import { CurrentExecutor } from "./CurrentExecutor";
+import {
+  __internal_getCurrentExecutor,
+  __internal_setCurrentExecutor,
+} from "./CurrentExecutor";
 
 export function MockCreateElement<P>(
   type: FunctionComponent<P>,
@@ -22,7 +25,7 @@ export function MockCreateElement<P>(
 
       const [ executor ] = ReactActual.useState(
         () => {
-          const parentExecutor = CurrentExecutor.shared.value.valueOf();
+          const parentExecutor = __internal_getCurrentExecutor();
           const currentExecutor = new ConcurrentSideEffectChain(
             parentExecutor,
             new Unique(
@@ -38,11 +41,11 @@ export function MockCreateElement<P>(
 
       ReactActual.useLayoutEffect(() => () => Disposable.dispose(executor), []);
 
-      const previousExecutor = CurrentExecutor.shared.value.update(executor);
+      const previousExecutor = __internal_setCurrentExecutor(executor);
 
       const returnValue = type(...args);
 
-      CurrentExecutor.shared.value.update(previousExecutor);
+      __internal_setCurrentExecutor(previousExecutor);
 
       return returnValue;
 

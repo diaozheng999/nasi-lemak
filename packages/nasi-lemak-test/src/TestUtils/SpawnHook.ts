@@ -8,7 +8,10 @@ import { Disposable, Types, Unique } from "nasi-lemak";
 import { SideEffectChain } from "../EffectChains";
 import { IDescribable, IHookEffectChain } from "../Interfaces";
 import { ReactActual, useHookSpawner } from "../Utils";
-import { CurrentExecutor } from "./CurrentExecutor";
+import {
+  __internal_getCurrentExecutor,
+  __internal_setCurrentExecutor,
+} from "./CurrentExecutor";
 
 export function SpawnHook<
   THook extends (...args: any[]) => any
@@ -32,7 +35,7 @@ export function SpawnHook<
 
     const [ chain ] = ReactActual.useState(
       () => {
-        const executor = CurrentExecutor.shared.value.valueOf();
+        const executor = __internal_getCurrentExecutor();
         const effectChain = new EffectChain(spawnerDesc, spawner, id);
         executor.enqueue(effectChain);
         return effectChain;
