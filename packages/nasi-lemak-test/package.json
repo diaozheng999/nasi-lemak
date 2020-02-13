@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak-test",
-  "version": "0.1.0",
+  "version": "0.1.0-unstable.0",
   "description": "Testing utilities for Nasi Lemak",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
@@ -20,9 +20,6 @@
   "module": "dist/esm/index.js",
   "author": "My M1 App Team",
   "license": "MIT",
-  "publishConfig": {
-    "registry": "http://m1app01d.m1.com.sg/nexus/repository/npm-private/"
-  },
   "dependencies": {
     "asap": "^2.0.6",
     "chalk": "^3.0.0",

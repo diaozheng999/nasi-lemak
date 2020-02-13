@@ -4,7 +4,14 @@
  * @file Describes a chain of side effects
  */
 
-import { Option, requires, Unique, UniqueValue, ICustomDisposable, Disposable } from "nasi";
+import {
+  Disposable,
+  ICustomDisposable,
+  Option,
+  requires,
+  Unique,
+  UniqueValue,
+} from "nasi";
 import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
