@@ -30,4 +30,3 @@
 # 1.0.0
 
 - Initial migration from internal repo
-

@@ -5,7 +5,7 @@
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "otah clean --no-barrel",
     "prebuild": "npm run clean",
     "build": "tsc",
     "postbuild": "rollup -c rollup.config.js",
@@ -27,6 +27,7 @@
     "nasi-lemak-react-types": "^1.1.2"
   },
   "devDependencies": {
+    "otah": "^0.2.1",
     "rollup": "^1.24.0",
     "rollup-plugin-terser": "^5.2.0",
     "terser": "^4.3.9",
