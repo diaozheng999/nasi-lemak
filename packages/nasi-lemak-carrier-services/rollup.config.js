@@ -8,11 +8,10 @@ module.exports = {
     terser(),
   ],
   external: [
-    "lodash",
-    "nasi",
-    "nasi-lemak",
     "react",
     "react-native",
+    "nasi",
+    "nasi-lemak",
     "rxjs",
     "tslib"
   ],

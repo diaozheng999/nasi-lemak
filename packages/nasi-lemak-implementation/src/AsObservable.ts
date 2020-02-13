@@ -12,18 +12,7 @@
 import { Stable } from "nasi-lemak-react-types";
 import { useEffect, useReducer } from "react";
 import { BehaviorSubject, Observable, Subject } from "rxjs";
-
-/**
- * We're hacking the `useReducer` reducer to give us a stable function that
- * allows us to update said item.
- * @param subject$ The "state", or rather, the subject to emit values to
- * @param value The "action", or rather, the next value to emit
- * @returns always the object `subject$`
- */
-function updateValue<T>(subject$: Subject<T>, value: T): Subject<T> {
-  subject$.next(value);
-  return subject$;
-}
+import { rxUpdateReducer } from "./RxShim";
 
 export function useAsObservable<T extends unknown[], U>(
   value: Stable.Function<T, U>,
@@ -58,7 +47,7 @@ export function useAsObservable<T>(
  */
 export function useAsObservable<T>(value: T): Observable<T> {
   const [ subject$, dispatch ] = useReducer<React.Reducer<Subject<T>, T>, null>(
-    updateValue,
+    rxUpdateReducer,
     null,
     () => new BehaviorSubject<T>(value),
   );

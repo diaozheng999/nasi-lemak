@@ -1,9 +1,12 @@
+
 /**
  * Action.ts
  * @author Diao Zheng
  * @file Action constructors and matchers
  * @barrel export all
  */
+
+import { P } from "nasi";
 
 interface IAction<TAction> {
   readonly action: TAction;
@@ -32,7 +35,9 @@ export type Rescoped<TScope, T> =
 ;
 
 export function create<TAction, TPayload>(
-  action: TAction, payload: TPayload): IActionWithPayload<TAction, TPayload> {
+  action: TAction,
+  payload: TPayload,
+): IActionWithPayload<TAction, TPayload> {
   return { action, payload };
 }
 
@@ -59,4 +64,17 @@ export function rescope<TScope, T extends IAction<any>>(
   scope: TScope,
 ): Scoped<TScope, T> {
   return { ...action, scope };
+}
+
+export function isType<T extends IAction<any>>(
+  type: T["action"],
+): P.Typed<IAction<any>, T> {
+  return (action: IAction<any>): action is T => action.action === type;
+}
+
+export function isScope<TScope, TAction extends Scoped<TScope, IAction<any>>>(
+  scope: TScope,
+): P.Typed<IAction<any>, TAction> {
+  return (action: IAction<any>): action is TAction =>
+    action.hasOwnProperty("scope") && (action as any).scope === scope;
 }

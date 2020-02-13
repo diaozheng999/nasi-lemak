@@ -9,12 +9,15 @@ import { useEffect, useState } from "react";
 import { Observable } from "rxjs";
 
 export function useObservable<T>(
-  source$: Observable<T>,
+  source$: Observable<T> | (() => Observable<T>),
   initialValue: T | (() => T),
 ): [ T ] {
+
+  const [ actualSource$ ] = useState(source$);
+
   const [ response, setResponse ] = useState(initialValue);
   useEffect(() => {
-    const subscription = source$.subscribe({
+    const subscription = actualSource$.subscribe({
       next: setResponse,
     });
     return () => {

@@ -8,6 +8,7 @@ module.exports = {
     terser(),
   ],
   external: [
+    "@react-native-community/async-storage",
     "lodash",
     "nasi",
     "nasi-lemak",
