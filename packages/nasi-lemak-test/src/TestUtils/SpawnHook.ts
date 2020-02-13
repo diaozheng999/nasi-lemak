@@ -4,28 +4,11 @@
  * @file A Describable spawner that represents the hook
  */
 
-import { Option, Types, Unique } from "nasi-lemak";
-import {
-  ConcurrentSideEffectChain,
-  RootEffectChain,
-  SideEffectChain,
-} from "../EffectChains";
+import { Disposable, Types, Unique } from "nasi-lemak";
+import { SideEffectChain } from "../EffectChains";
 import { IDescribable, IHookEffectChain } from "../Interfaces";
 import { ReactActual, useHookSpawner } from "../Utils";
-
-let currentExecutor: Option.Type<ConcurrentSideEffectChain>;
-
-export function __internal_setCurrentExecutor(
-  executor?: ConcurrentSideEffectChain,
-) {
-  const previousExecutor = currentExecutor;
-  currentExecutor = executor;
-  return previousExecutor;
-}
-
-export function __internal_getCurrentExecutor() {
-  return currentExecutor ?? RootEffectChain.current;
-}
+import { CurrentExecutor } from "./CurrentExecutor";
 
 export function SpawnHook<
   THook extends (...args: any[]) => any
@@ -49,16 +32,14 @@ export function SpawnHook<
 
     const [ chain ] = ReactActual.useState(
       () => {
-        const executor = currentExecutor ?? RootEffectChain.current;
+        const executor = CurrentExecutor.shared.value.valueOf();
         const effectChain = new EffectChain(spawnerDesc, spawner, id);
         executor.enqueue(effectChain);
         return effectChain;
       },
     );
 
-    ReactActual.useLayoutEffect(() => () => {
-      chain.deactivate();
-    }, []);
+    ReactActual.useLayoutEffect(() => () => Disposable.dispose(chain), []);
 
     return chain.executeHook(ReactActual, ...args);
   };

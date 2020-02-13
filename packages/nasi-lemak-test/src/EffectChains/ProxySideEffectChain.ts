@@ -4,15 +4,22 @@
  * @file A side effect chain that proxies another side effect chain.
  */
 
+import { assert, Box, Option, Disposable } from "nasi";
+import { SideEffect } from "../Effects";
+import { Duration } from "../Utils";
 import { SideEffectChain } from "./SideEffectChain";
-import { Box, Option, Unique, requires, P, assert } from 'nasi';
-import { IDescribable } from '../Interfaces';
-import { SideEffect } from '../Effects';
 
 export class ProxySideEffectChain<T extends SideEffectChain>
 extends SideEffectChain {
 
   protected chain: Box<T> = new Box();
+
+  public [Disposable.Dispose]() {
+    if (this.chain.value?.isPersistent()) {
+      Disposable.dispose(this.chain.value);
+    }
+    super[Disposable.Dispose]();
+  }
 
   protected setProxiedChain(proxiedChain: T) {
     assert(
@@ -24,6 +31,21 @@ extends SideEffectChain {
     this.chain.value = proxiedChain;
   }
 
+  protected advance(duration: Duration.Type): Duration.Type {
+    if (Option.isSome(this.chain.value)) {
+      this.state = {
+        current: this.chain.value,
+        stepCount: 0,
+        type: "EXECUTING_CHAIN",
+      };
+    } else if (this.isPersistentAndActive()) {
+      this.state = { type: "SUSPENDED" };
+    } else {
+      this.state = { type: "COMPLETE" };
+    }
+    return duration;
+  }
+
   protected push(effect: SideEffectChain | SideEffect) {
     assert(
       Option.isSome,
@@ -31,10 +53,6 @@ extends SideEffectChain {
       "A proxied chain must exist to set effect:\n" + effect.describe(""),
     );
     this.chain.value.enqueue(effect);
-  }
-
-  public deactivate() {
-    
   }
 
 }

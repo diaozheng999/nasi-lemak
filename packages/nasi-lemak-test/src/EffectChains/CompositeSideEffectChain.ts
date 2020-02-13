@@ -5,7 +5,7 @@
  */
 
 import _ from "lodash";
-import { invariant, Unique } from "nasi-lemak";
+import { Disposable, invariant, Unique } from "nasi-lemak";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
 import { SideEffectChain } from "./SideEffectChain";
@@ -77,7 +77,7 @@ extends SideEffectChain
 
   public deactivate = () => {
     for (const queue of this.chain) {
-      queue.deactivate();
+      Disposable.dispose(queue);
     }
   }
 

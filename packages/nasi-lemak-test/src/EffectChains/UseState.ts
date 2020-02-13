@@ -4,8 +4,8 @@
  * @file useState compatible hook
  */
 
-import { Option, Unique, Stable } from "nasi-lemak";
-import React, { SetStateAction, useState } from "react";
+import { Stable, Unique } from "nasi-lemak";
+import React, { SetStateAction } from "react";
 import { SetStateEffect } from "../Effects";
 import { IDescribable, IHookEffectChain } from "../Interfaces";
 import { SerialSideEffectChain } from "./SerialSideEffectChain";
@@ -20,12 +20,6 @@ function setStateActionUsesPrevState<S>(
   action: SetStateAction<S>,
 ): action is (prevState: S) => S {
   return typeof action === "function";
-}
-
-function initialStateIsLazy<S>(
-  state: S | (() => S),
-): state is () => S {
-  return typeof state === "function";
 }
 
 export class UseState<S>

@@ -4,7 +4,7 @@
  * @file This is the global root effect chain
  */
 
-import { Unique } from "nasi-lemak";
+import { Disposable, Unique } from "nasi-lemak";
 import { IDescribable } from "../Interfaces";
 import { ConcurrentSideEffectChain } from "./ConcurrentSideEffectChain";
 import { RoundRobinSideEffectChain } from "./RoundRobinSideEffectChain";
@@ -35,7 +35,7 @@ export const RootEffectChain: {
 
   create(type) {
     if (this.current) {
-      this.current.deactivate();
+      Disposable.dispose(this.current);
     }
 
     switch (type) {

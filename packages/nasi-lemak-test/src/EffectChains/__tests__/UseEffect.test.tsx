@@ -8,7 +8,7 @@
 /// <reference path="../../../node_modules/@types/jest/index.d.ts" />
 
 import renderer from "react-test-renderer";
-import { MockReact } from "../../MockReact";
+import { MockReact } from "../../Modules/MockReact";
 
 jest.doMock("react", MockReact);
 

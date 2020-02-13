@@ -5,7 +5,7 @@
  * @file useEffect compatible hook
  */
 
-import { Option, Unique } from "nasi-lemak";
+import { Disposable, Option, Unique } from "nasi-lemak";
 import React, { DependencyList, EffectCallback, useEffect } from "react";
 import { UseEffectHookCleanupEffect, UseEffectHookEffect } from "../Effects";
 import { IDescribable, IHookEffectChain } from "../Interfaces";
@@ -39,11 +39,11 @@ implements IHookEffectChain<typeof useEffect> {
     }, deps);
   }
 
-  public deactivate() {
+  public [Disposable.Dispose]() {
     if (Option.isSome(this.lastCleanupEffect)) {
       this.enqueue(this.lastCleanupEffect);
     }
-    super.deactivate();
+    super[Disposable.Dispose]();
   }
 
   protected advance(duration: Duration.Type): Duration.Type {

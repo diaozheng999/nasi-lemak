@@ -4,7 +4,7 @@
  * @file Describes a chain of side effects
  */
 
-import { Option, requires, Unique, UniqueValue } from "nasi";
+import { Option, requires, Unique, UniqueValue, ICustomDisposable, Disposable } from "nasi";
 import { SideEffect } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
@@ -44,7 +44,9 @@ type State =
   | ISideEffectSuspended
 ;
 
-export abstract class SideEffectChain implements IDescribable {
+export abstract class SideEffectChain
+implements IDescribable, ICustomDisposable {
+
   public static activePersistentChains: Set<SideEffectChain> = new Set();
 
   protected id: UniqueValue;
@@ -90,7 +92,7 @@ export abstract class SideEffectChain implements IDescribable {
     return this.spawnedBy;
   }
 
-  public deactivate() {
+  public [Disposable.Dispose]() {
     if (!this.persistent) {
       throw new Error("Can only deactivate a persistent side effect.");
     }
@@ -168,6 +170,10 @@ export abstract class SideEffectChain implements IDescribable {
 
   public getId() {
     return `${this.id}`;
+  }
+
+  public get [Disposable.IsDisposed]() {
+    return this.active;
   }
 
   public describe(linePrefix: string, abbreviate: boolean = false) {

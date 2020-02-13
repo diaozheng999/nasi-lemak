@@ -35,10 +35,12 @@ export class Dispatcher<T> implements ICustomDisposable, Observer<T> {
 
   private dispatchers: Map<UniqueValue, (action: T) => void> = new Map();
 
-  constructor(debugName?: string) {
-    if (Option.isSome(debugName)) {
-      this.idGenerator = new Unique(debugName);
-    }
+  constructor(debugName?: string | React.Component) {
+    Dev.devOnly(() => {
+      if (Option.isSome(debugName)) {
+        this.idGenerator = new Unique(debugName.toString());
+      }
+    });
   }
 
   public UNSAFE_dispatchToCurrentDispatchers() {

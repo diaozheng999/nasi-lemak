@@ -4,6 +4,9 @@
  * @file Test cases for a round-robin side effect chain.
  */
 
+// tslint:disable-next-line:no-reference
+/// <reference path="../../../node_modules/@types/jest/index.d.ts" />
+
 import _ from "lodash";
 
 import { SideEffect } from "../../Effects";

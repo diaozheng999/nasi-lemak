@@ -4,14 +4,11 @@
  * @file Mocking React.createElement for testing
  */
 
-import { Types, Unique } from "nasi-lemak";
+import { Disposable, Types, Unique } from "nasi-lemak";
 import { Attributes, FunctionComponent, ReactElement, ReactNode } from "react";
 import { ConcurrentSideEffectChain } from "../EffectChains";
 import { ReactActual } from "../Utils";
-import {
-  __internal_getCurrentExecutor,
-  __internal_setCurrentExecutor,
-} from "./SpawnHook";
+import { CurrentExecutor } from "./CurrentExecutor";
 
 export function MockCreateElement<P>(
   type: FunctionComponent<P>,
@@ -25,7 +22,7 @@ export function MockCreateElement<P>(
 
       const [ executor ] = ReactActual.useState(
         () => {
-          const parentExecutor = __internal_getCurrentExecutor();
+          const parentExecutor = CurrentExecutor.shared.value.valueOf();
           const currentExecutor = new ConcurrentSideEffectChain(
             parentExecutor,
             new Unique(
@@ -39,13 +36,13 @@ export function MockCreateElement<P>(
         },
       );
 
-      ReactActual.useLayoutEffect(() => () => executor.deactivate(), []);
+      ReactActual.useLayoutEffect(() => () => Disposable.dispose(executor), []);
 
-      const previousExecutor = __internal_setCurrentExecutor(executor);
+      const previousExecutor = CurrentExecutor.shared.value.update(executor);
 
       const returnValue = type(...args);
 
-      __internal_setCurrentExecutor(previousExecutor);
+      CurrentExecutor.shared.value.update(previousExecutor);
 
       return returnValue;
 

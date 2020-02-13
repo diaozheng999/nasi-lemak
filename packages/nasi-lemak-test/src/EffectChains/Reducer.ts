@@ -5,7 +5,14 @@
  * @file A Reducer Side Effect Chain
  */
 
-import { assert, Intent, Option, requires, Unique } from "nasi-lemak";
+import {
+  assert,
+  Disposable,
+  Intent,
+  Option,
+  requires,
+  Unique,
+} from "nasi-lemak";
 import { Action, SideEffect, Update } from "../Effects";
 import { IDescribable } from "../Interfaces";
 import { Duration } from "../Utils";
@@ -68,10 +75,11 @@ export class Reducer<TState, TAction> extends SideEffectChain {
     throw new Error("A Reducer is always persistent.");
   }
 
-  public deactivate = () => {
-    this.mainQueue.deactivate();
-    this.updateQueue.deactivate();
-    this.sideEffectQueue.deactivate();
+  public [Disposable.Dispose]() {
+    Disposable.dispose(this.mainQueue);
+    Disposable.dispose(this.updateQueue);
+    Disposable.dispose(this.sideEffectQueue);
+    super[Disposable.Dispose]();
   }
 
   @requires(function(this: SideEffectChain, __: Action<TAction>) {

@@ -1,15 +1,15 @@
 /**
- * MockComponent.ts
+ * Component.ts
  * @author Diao Zheng
  * @file A Mock Component that uses the effect chain.
  */
 
 import _ from "lodash";
-import { Intent, Unique } from "nasi-lemak";
+import { Disposable, Intent, Unique } from "nasi-lemak";
 import React from "react";
-import { Reducer } from "./EffectChains";
-import { Action } from "./Effects";
-import { IDescribable } from "./Interfaces";
+import { Reducer } from "../EffectChains";
+import { Action } from "../Effects";
+import { IDescribable } from "../Interfaces";
 
 const generator = new Unique();
 
@@ -54,6 +54,7 @@ export abstract class Component<
 
   public constructor(props: TProps) {
     super(props);
+
     this.instanceId = generator.number.toString(16);
     this.reducerExecutor = new Reducer(
       this.reducer,
@@ -66,7 +67,7 @@ export abstract class Component<
 
   public componentWillUnmount() {
     this.mock.componentWillUnmount();
-    this.reducerExecutor.deactivate();
+    Disposable.dispose(this.reducerExecutor);
   }
 
   public getId = () => this.getDebugName();

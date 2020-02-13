@@ -5,9 +5,9 @@
  */
 
 import { Unique } from "nasi";
-import { UseEffect, UseState } from "./EffectChains";
-import { MockCreateElement, SpawnHook } from "./TestUtils";
-import { ReactActual } from "./Utils";
+import { UseEffect, UseReducer, UseState } from "../EffectChains";
+import { MockCreateElement, SpawnHook } from "../TestUtils";
+import { ReactActual } from "../Utils";
 
 export function MockReact(): unknown {
   return {
@@ -15,6 +15,7 @@ export function MockReact(): unknown {
     __nltinternal_isMocked: true,
     createElement: MockCreateElement,
     useEffect: SpawnHook(UseEffect, new Unique("useEffect")),
+    useReducer: SpawnHook(UseReducer, new Unique("useReducer")),
     useState: SpawnHook(UseState, new Unique("useState")),
   };
 }
