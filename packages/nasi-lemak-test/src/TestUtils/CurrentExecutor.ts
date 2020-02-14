@@ -1,7 +1,7 @@
 /**
  * CurrentExecutor.ts
  * @author Diao Zheng
- * @file Delays and executes 
+ * @file Updates the current executor in the hook context.
  */
 
 // @barrel ignore

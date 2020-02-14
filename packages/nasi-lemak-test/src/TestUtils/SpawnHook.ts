@@ -43,7 +43,6 @@ export function SpawnHook<
     );
 
     ReactActual.useLayoutEffect(() => () => {
-      console.warn(chain);
       Disposable.dispose(chain);
     }, []);
 
