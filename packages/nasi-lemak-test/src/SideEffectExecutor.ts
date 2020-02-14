@@ -5,11 +5,12 @@
  * @file Enable old-style executors
  */
 
+import { Disposable, IDisposable } from "nasi-lemak";
 import { LegacyCompatChain, RootEffectChain } from "./EffectChains";
 import { IDescribable } from "./Interfaces";
 import { Duration } from "./Utils";
 
-export class SideEffectExecutor implements IDescribable {
+export class SideEffectExecutor implements IDescribable, IDisposable {
 
   public static current: SideEffectExecutor;
 
@@ -23,7 +24,15 @@ export class SideEffectExecutor implements IDescribable {
 
   public static createNewQueue() {
     RootEffectChain.create("CONCURRENT");
+
+    if (SideEffectExecutor.current) {
+      Disposable.dispose(SideEffectExecutor.current);
+    }
+
+    SideEffectExecutor.current = new SideEffectExecutor();
   }
+
+  public [Disposable.Instance]: Disposable;
 
   private legacyChain: LegacyCompatChain;
 
@@ -31,6 +40,9 @@ export class SideEffectExecutor implements IDescribable {
     SideEffectExecutor.current = this;
     this.legacyChain = new LegacyCompatChain(this, undefined, true);
     RootEffectChain.current.enqueue(this.legacyChain);
+    this[Disposable.Instance] = new Disposable(
+      () => Disposable.dispose(this.legacyChain),
+    );
   }
 
   public getId() {
