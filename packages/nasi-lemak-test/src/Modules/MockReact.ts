@@ -5,17 +5,19 @@
  */
 
 import { Unique } from "nasi";
+import { MockModule } from "./MockModule";
 
-export function MockReact(): unknown {
+export const MockReact = MockModule(() => {
   const { UseEffect, UseReducer, UseState } = require("../EffectChains");
   const { SpawnHook } = require("../TestUtils");
-  const { MockCreateElement, ReactActual } = require("../Utils");
+  const { ReactActual } = require("../Utils");
+  const { MockCreateElement } = require("../TestUtils");
   return {
     ...ReactActual,
     __nltinternal_isMocked: true,
-    createElement: MockCreateElement,
+    createElement: MockCreateElement(ReactActual),
     useEffect: SpawnHook(UseEffect, new Unique("useEffect")),
     useReducer: SpawnHook(UseReducer, new Unique("useReducer")),
     useState: SpawnHook(UseState, new Unique("useState")),
   };
-}
+});

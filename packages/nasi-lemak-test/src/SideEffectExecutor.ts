@@ -7,12 +7,15 @@
 
 import { Disposable, IDisposable } from "nasi-lemak";
 import { LegacyCompatChain, RootEffectChain } from "./EffectChains";
+import { LegacySideEffectType } from "./Effects";
 import { IDescribable } from "./Interfaces";
 import { Duration } from "./Utils";
 
 export class SideEffectExecutor implements IDescribable, IDisposable {
 
   public static current: SideEffectExecutor;
+
+  public static currentQueueIsActive = true;
 
   public static setupEnvironment() {
     // tslint:disable-next-line: no-console
@@ -55,6 +58,10 @@ export class SideEffectExecutor implements IDescribable, IDisposable {
 
   public owner() {
     return undefined;
+  }
+
+  public enqueue(legacyEffect: LegacySideEffectType) {
+    this.legacyChain.enqueueLegacy(legacyEffect);
   }
 
   public executeAllSynchronousEffects(__?: any) {
