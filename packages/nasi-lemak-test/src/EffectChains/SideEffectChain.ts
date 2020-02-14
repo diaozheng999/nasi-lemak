@@ -192,7 +192,7 @@ implements IDescribable, ICustomDisposable {
   }
 
   public get [Disposable.IsDisposed]() {
-    return this.active;
+    return !this.active;
   }
 
   public describe(linePrefix: string, abbreviate: boolean = false) {

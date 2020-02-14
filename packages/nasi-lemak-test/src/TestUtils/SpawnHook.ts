@@ -10,6 +10,7 @@ import { IDescribable, IHookEffectChain } from "../Interfaces";
 import { ReactActual, useHookSpawner } from "../Utils";
 import {
   __internal_getCurrentExecutor,
+  __internal_incrementCurrentHookCount,
   __internal_setCurrentExecutor,
 } from "./CurrentExecutor";
 
@@ -26,7 +27,6 @@ export function SpawnHook<
 ): THook {
 
   const constructHook: any = (...args: Types.ArgumentTupleType<THook>) => {
-
     const [ hookId ] = ReactActual.useState(
       () => (spawner ?? (new Unique("Hook"))).string,
     );
@@ -42,8 +42,12 @@ export function SpawnHook<
       },
     );
 
-    ReactActual.useLayoutEffect(() => () => Disposable.dispose(chain), []);
+    ReactActual.useLayoutEffect(() => () => {
+      console.warn(chain);
+      Disposable.dispose(chain);
+    }, []);
 
+    __internal_incrementCurrentHookCount();
     return chain.executeHook(ReactActual, ...args);
   };
 

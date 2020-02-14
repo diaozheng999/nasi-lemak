@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`builtin 1`] = `<h6 />`;
+
+exports[`class component 1`] = `<__builtin__ />`;
+
+exports[`context consumer 1`] = `
+<__builtin__
+  value="TestContext"
+/>
+`;
+
+exports[`context producer 1`] = `<__builtin__ />`;
+
+exports[`exotic 1`] = `<__builtin__ />`;
+
+exports[`fragment 1`] = `
+Array [
+  <__builtin__ />,
+  <__builtin__ />,
+]
+`;
+
+exports[`function component 1`] = `<__builtin__ />`;
+
+exports[`suspense 1`] = `
+<__builtin__
+  value={5}
+/>
+`;
