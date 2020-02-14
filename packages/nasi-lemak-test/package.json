@@ -1,6 +1,6 @@
 {
   "name": "nasi-lemak-test",
-  "version": "0.1.0-unstable.6",
+  "version": "0.1.0-unstable.7",
   "description": "Testing utilities for Nasi Lemak",
   "main": "dist/cjs/index.js",
   "types": "dist/types/index.d.ts",
