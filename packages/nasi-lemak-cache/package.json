@@ -28,7 +28,7 @@
     "nasi": "^1.2.3",
     "nasi-lemak": "^1.2.0-pre.14",
     "react": "^16.9.0",
-    "react-native": "^0.61.1",
+    "react-native": "^0.62.3",
     "rxjs": "^6.5.3",
     "tslib": "^1.10.0"
   },
